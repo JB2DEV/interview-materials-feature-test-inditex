@@ -1,0 +1,17 @@
+spring:
+  application:
+      name: "interview-materials-feature-test-inditex"
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/assetdb
+    username: postgres
+    password: postgres
+  sql:
+    init:
+      mode: always
+      platform: postgres
+      schema-locations: classpath:schema.sql
+
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
+    io.r2dbc.postgresql.QUERY: DEBUG
