@@ -7,6 +7,7 @@ import com.interview.materials.feature.test.inditex.infraestructure.db.entity.As
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -16,12 +17,14 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class AssetRepositoryImpl implements AssetRepository {
 
-    private final AssetEntityRepositoryR2dbc repository;
+    private final R2dbcEntityTemplate template;
+    private final AssetEntityRepositoryR2dbc reader;
 
     @Override
     public Mono<Asset> save(Asset asset) {
         AssetEntity entity = AssetMapper.toPersistence(asset);
-        return repository.save(entity)
+        return template.insert(AssetEntity.class)
+                .using(entity)
                 .map(AssetMapper::toDomain);
     }
 

@@ -5,11 +5,6 @@ spring:
     url: r2dbc:postgresql://localhost:5432/assetdb
     username: postgres
     password: postgres
-  sql:
-    init:
-      mode: always
-      platform: postgres
-      schema-locations: classpath:schema.sql
 
 management:
   endpoints:
