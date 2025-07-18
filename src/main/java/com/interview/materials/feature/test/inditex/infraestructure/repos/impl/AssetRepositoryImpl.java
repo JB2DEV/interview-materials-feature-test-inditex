@@ -6,7 +6,9 @@ import com.interview.materials.feature.test.inditex.domain.repository.AssetRepos
 import com.interview.materials.feature.test.inditex.infraestructure.db.entity.AssetEntity;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
+import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 
 
 @RequiredArgsConstructor
+@Slf4j
 public class AssetRepositoryImpl implements AssetRepository {
 
     private final R2dbcEntityTemplate template;
@@ -23,9 +26,12 @@ public class AssetRepositoryImpl implements AssetRepository {
     @Override
     public Mono<Asset> save(Asset asset) {
         AssetEntity entity = AssetMapper.toPersistence(asset);
-        return template.insert(AssetEntity.class)
-                .using(entity)
-                .map(AssetMapper::toDomain);
+        return TraceIdHolder.getTraceId()
+                .doOnNext(traceId ->
+                        log.info("[traceId={}] Saving asset with filename='{}'", traceId, entity.getFilename()))
+                .then(template.insert(AssetEntity.class)
+                        .using(entity)
+                        .map(AssetMapper::toDomain));
     }
 
     @Override

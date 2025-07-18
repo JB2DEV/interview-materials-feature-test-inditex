@@ -4,6 +4,7 @@ import com.interview.materials.feature.test.inditex.application.validation.error
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
 import com.interview.materials.feature.test.inditex.domain.exception.DomainEntityNotFoundException;
 import com.interview.materials.feature.test.inditex.domain.exception.DomainValidationException;
+import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.engine.path.PathImpl;
@@ -25,20 +26,26 @@ public class GlobalErrorController {
 
     @ExceptionHandler(Exception.class)
     public Mono<ResponseEntity<ErrorResponse>> handleGeneric(Exception ex) {
-        log.error("Unhandled exception: {}", ex.getMessage(), ex);
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred.");
+        return TraceIdHolder.getTraceId().flatMap(traceId -> {
+            log.error("[traceId={}] Unhandled exception: {}", traceId, ex.getMessage(), ex);
+            return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred.");
+        });
     }
 
     @ExceptionHandler(DomainEntityNotFoundException.class)
     public Mono<ResponseEntity<ErrorResponse>> handleNotFound(DomainEntityNotFoundException ex) {
-        log.warn("Entity not found: {}", ex.getMessage());
-        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+        return TraceIdHolder.getTraceId().flatMap(traceId -> {
+            log.warn("[traceId={}] Entity not found: {}", traceId, ex.getMessage());
+            return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+        });
     }
 
     @ExceptionHandler(DomainValidationException.class)
     public Mono<ResponseEntity<ErrorResponse>> handleDomainValidation(DomainValidationException ex) {
-        log.warn("Domain validation failed: {}", ex.getMessage());
-        return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        return TraceIdHolder.getTraceId().flatMap(traceId -> {
+            log.warn("[traceId={}] Domain validation failed: {}", traceId, ex.getMessage());
+            return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        });
     }
 
     @ExceptionHandler({
@@ -46,56 +53,64 @@ public class GlobalErrorController {
             UnsupportedAssetContentTypeException.class
     })
     public Mono<ResponseEntity<ErrorResponse>> handleApplicationValidation(RuntimeException ex) {
-        log.warn("Application validation error: {}", ex.getMessage());
-        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return TraceIdHolder.getTraceId().flatMap(traceId -> {
+            log.warn("[traceId={}] Application validation error: {}", traceId, ex.getMessage());
+            return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        });
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public Mono<ResponseEntity<ErrorResponse>> handleConstraintViolation(ConstraintViolationException ex) {
-        log.warn("Constraint violations: {}", ex.getMessage());
+        return TraceIdHolder.getTraceId().flatMap(traceId -> {
+            log.warn("[traceId={}] Constraint violations: {}", traceId, ex.getMessage());
 
-        List<ErrorResponse.FieldError> errors = ex.getConstraintViolations().stream()
-                .map(v -> new ErrorResponse.FieldError(
-                        ((PathImpl) v.getPropertyPath()).getLeafNode().getName(),
-                        v.getMessage()))
-                .toList();
+            List<ErrorResponse.FieldError> errors = ex.getConstraintViolations().stream()
+                    .map(v -> new ErrorResponse.FieldError(
+                            ((PathImpl) v.getPropertyPath()).getLeafNode().getName(),
+                            v.getMessage()))
+                    .toList();
 
-        return buildResponse(HttpStatus.BAD_REQUEST, "Invalid input fields", errors);
+            return buildResponse(HttpStatus.BAD_REQUEST, "Invalid input fields", errors);
+        });
     }
 
     @ExceptionHandler(WebExchangeBindException.class)
     public Mono<ResponseEntity<ErrorResponse>> handleWebExchangeBind(WebExchangeBindException ex) {
-        log.warn("Validation errors on request: {}", ex.getMessage());
+        return TraceIdHolder.getTraceId().flatMap(traceId -> {
+            log.warn("[traceId={}] Validation errors on request: {}", traceId, ex.getMessage());
 
-        List<ErrorResponse.FieldError> errors = ex.getFieldErrors().stream()
-                .map(err -> new ErrorResponse.FieldError(
-                        err.getField(),
-                        err.getDefaultMessage() != null ? err.getDefaultMessage() : "Invalid value"))
-                .toList();
+            List<ErrorResponse.FieldError> errors = ex.getFieldErrors().stream()
+                    .map(err -> new ErrorResponse.FieldError(
+                            err.getField(),
+                            err.getDefaultMessage() != null ? err.getDefaultMessage() : "Invalid value"))
+                    .toList();
 
-        return buildResponse(HttpStatus.BAD_REQUEST, "One or more fields are invalid", errors);
+            return buildResponse(HttpStatus.BAD_REQUEST, "One or more fields are invalid", errors);
+        });
     }
 
     private Mono<ResponseEntity<ErrorResponse>> buildResponse(HttpStatus status, String message) {
-        ErrorResponse error = new ErrorResponse(
-                status.value(),
-                status.getReasonPhrase(),
-                message,
-                nowFormatted(),
-                null
-        );
-        return Mono.just(ResponseEntity.status(status).body(error));
+        return Mono.just(ResponseEntity.status(status).body(
+                new ErrorResponse(
+                        status.value(),
+                        status.getReasonPhrase(),
+                        message,
+                        nowFormatted(),
+                        null
+                )
+        ));
     }
 
     private Mono<ResponseEntity<ErrorResponse>> buildResponse(HttpStatus status, String message, List<ErrorResponse.FieldError> errors) {
-        ErrorResponse error = new ErrorResponse(
-                status.value(),
-                status.getReasonPhrase(),
-                message,
-                nowFormatted(),
-                errors
-        );
-        return Mono.just(ResponseEntity.status(status).body(error));
+        return Mono.just(ResponseEntity.status(status).body(
+                new ErrorResponse(
+                        status.value(),
+                        status.getReasonPhrase(),
+                        message,
+                        nowFormatted(),
+                        errors
+                )
+        ));
     }
 
     private String nowFormatted() {
