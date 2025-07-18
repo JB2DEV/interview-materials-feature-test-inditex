@@ -7,12 +7,15 @@ import com.interview.materials.feature.test.inditex.application.validation.Asset
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
+import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UploadAssetService {
 
     private final UploadAssetUseCase uploadAssetUseCase;
@@ -25,7 +28,9 @@ public class UploadAssetService {
         UploadAssetCommand command = AssetMapper.toCommand(requestDto);
         Asset domainAsset = AssetMapper.toDomain(command, generateFinalUrl(requestDto.filename()));
 
-        return uploadAssetUseCase.upload(domainAsset)
+        return TraceIdHolder.getTraceId()
+                .doOnNext(traceId -> log.info("[traceId={}] Handling asset upload use case", traceId))
+                .then(uploadAssetUseCase.upload(domainAsset))
                 .map(AssetMapper::toResponse);
     }
 
