@@ -1,6 +1,7 @@
-package com.interview.materials.feature.test.inditex.domain.validation;
+package com.interview.materials.feature.test.inditex.application.validation;
 
-import com.interview.materials.feature.test.inditex.domain.exception.InvalidAssetException;
+import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
+import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
@@ -11,13 +12,13 @@ public class AssetValidator {
 
     public void validateEncodedFile(String encodedFile) {
         if (!isValidBase64(encodedFile)) {
-            throw new InvalidAssetException("The encoded file is not valid base64.");
+            throw new InvalidBase64EncodedAssetException("The encoded file is not valid base64.");
         }
     }
 
     public void validateContentType(String contentType) {
         if (!isSupportedContentType(contentType)) {
-            throw new InvalidAssetException("Unsupported content type: " + contentType);
+            throw new UnsupportedAssetContentTypeException("Unsupported content type: " + contentType);
         }
     }
 

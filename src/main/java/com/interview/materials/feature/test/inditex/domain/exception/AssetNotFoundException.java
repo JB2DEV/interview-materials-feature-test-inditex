@@ -1,7 +1,14 @@
 package com.interview.materials.feature.test.inditex.domain.exception;
 
-public class AssetNotFoundException extends RuntimeException {
-    public AssetNotFoundException(String message) {
-        super(message);
+import com.interview.materials.feature.test.inditex.domain.model.AssetId;
+
+public class AssetNotFoundException extends DomainEntityNotFoundException {
+
+    public AssetNotFoundException() {
+        super("task");
+    }
+
+    public AssetNotFoundException(AssetId id) {
+        super("task", id.getValue().toString());
     }
 }

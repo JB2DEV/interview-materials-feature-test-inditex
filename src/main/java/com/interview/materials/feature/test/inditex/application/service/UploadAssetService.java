@@ -3,7 +3,7 @@ package com.interview.materials.feature.test.inditex.application.service;
 import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetCommand;
 import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
-import com.interview.materials.feature.test.inditex.domain.validation.AssetValidator;
+import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
@@ -19,11 +19,10 @@ public class UploadAssetService {
     private final AssetValidator assetValidator;
 
     public Mono<AssetFileUploadResponse> handle(AssetFileUploadRequest requestDto) {
+        assetValidator.validateEncodedFile(requestDto.encodedFile());
+        assetValidator.validateContentType(requestDto.contentType());
+
         UploadAssetCommand command = AssetMapper.toCommand(requestDto);
-
-        assetValidator.validateEncodedFile(command.encodedFile());
-        assetValidator.validateContentType(command.contentType());
-
         Asset domainAsset = AssetMapper.toDomain(command, generateFinalUrl(requestDto.filename()));
 
         return uploadAssetUseCase.upload(domainAsset)
