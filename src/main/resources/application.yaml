@@ -11,6 +11,15 @@ spring:
       platform: postgres
       schema-locations: classpath:schema.sql
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+
 logging:
   level:
     org.springframework.r2dbc: DEBUG
