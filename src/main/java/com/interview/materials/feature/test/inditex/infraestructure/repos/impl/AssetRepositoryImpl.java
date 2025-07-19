@@ -1,12 +1,10 @@
 package com.interview.materials.feature.test.inditex.infraestructure.repos.impl;
 
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
-import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
 import com.interview.materials.feature.test.inditex.infraestructure.db.entity.AssetEntity;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.repos.impl.query.AssetQueryBuilder;
-import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +21,6 @@ import java.util.UUID;
 public class AssetRepositoryImpl implements AssetRepository {
 
     private final R2dbcEntityTemplate template;
-    private final AssetEntityRepositoryR2dbc reader;
 
     @Override
     public Mono<Asset> save(Asset asset) {
@@ -61,11 +58,5 @@ public class AssetRepositoryImpl implements AssetRepository {
                     .all()
                     .map(AssetMapper::toDomain);
         });
-    }
-
-    @Override
-    public Mono<Asset> findById(AssetId id) {
-        //TODO : Implement find by ID logic
-        return null;
     }
 }

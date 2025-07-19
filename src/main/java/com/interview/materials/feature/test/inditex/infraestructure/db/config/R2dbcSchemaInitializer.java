@@ -14,17 +14,14 @@ public class R2dbcSchemaInitializer {
 
     @Bean
     public ConnectionFactoryInitializer initializer(ConnectionFactory connectionFactory) {
-        log.info("🛠️  Inicializando base de datos con schema.sql...");
-
         ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
         initializer.setConnectionFactory(connectionFactory);
 
         try {
             ResourceDatabasePopulator populator = new ResourceDatabasePopulator(new ClassPathResource("schema.sql"));
             initializer.setDatabasePopulator(populator);
-            log.info("✅ schema.sql configurado correctamente para inicialización.");
         } catch (Exception e) {
-            log.error("❌ Error al configurar el schema.sql para inicialización de la base de datos", e);
+            log.error("Error configuring schema.sql for database initialization", e);
         }
 
         return initializer;

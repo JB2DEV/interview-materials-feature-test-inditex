@@ -1,6 +1,6 @@
 spring:
   application:
-      name: "interview-materials-feature-test-inditex"
+    name: "interview-materials-feature-test-inditex"
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/assetdb
     username: postgres

@@ -22,16 +22,19 @@ public class UploadAssetService {
     private final AssetValidator assetValidator;
 
     public Mono<AssetFileUploadResponse> handle(AssetFileUploadRequest requestDto) {
-        assetValidator.validateEncodedFile(requestDto.encodedFile());
-        assetValidator.validateContentType(requestDto.contentType());
+        return Mono.when(
+                        assetValidator.validateEncodedFile(requestDto.encodedFile()),
+                        assetValidator.validateContentType(requestDto.contentType())
+                )
+                .then(Mono.defer(() -> {
+                    UploadAssetCommand command = AssetMapper.toCommand(requestDto);
+                    Asset domainAsset = AssetMapper.toDomain(command, generateFinalUrl(requestDto.filename()));
 
-        UploadAssetCommand command = AssetMapper.toCommand(requestDto);
-        Asset domainAsset = AssetMapper.toDomain(command, generateFinalUrl(requestDto.filename()));
-
-        return TraceIdHolder.getTraceId()
-                .doOnNext(traceId -> log.info("[traceId={}] Handling asset upload use case", traceId))
-                .then(uploadAssetUseCase.upload(domainAsset))
-                .map(AssetMapper::toResponse);
+                    return TraceIdHolder.getTraceId()
+                            .doOnNext(traceId -> log.info("[traceId={}] Handling asset upload use case", traceId))
+                            .then(uploadAssetUseCase.upload(domainAsset))
+                            .map(AssetMapper::toResponse);
+                }));
     }
 
     private String generateFinalUrl(String filename) {
