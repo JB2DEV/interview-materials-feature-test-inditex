@@ -1,7 +1,6 @@
 package com.interview.materials.feature.test.inditex.domain.repository;
 
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
-import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,6 +17,4 @@ public interface AssetRepository {
             LocalDateTime uploadDateEnd,
             String sortDirection
     );
-
-    Mono<Asset> findById(AssetId id);
 }

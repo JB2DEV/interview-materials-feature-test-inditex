@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
@@ -23,12 +24,13 @@ public class GetAssetsService {
     private final AssetValidator assetValidator;
 
     public Flux<Asset> find(AssetFilterRequest requestDto) {
-        assetValidator.validateSortDirection(requestDto.sortDirection());
-        assetValidator.validateDateRange(LocalDateTime.parse(requestDto.uploadDateStart()), LocalDateTime.parse(requestDto.uploadDateEnd()));
-
         FindAssetsByFiltersCommand command = AssetMapper.toCommand(requestDto);
 
-        return TraceIdHolder.getTraceId()
+        return Mono.when(
+                        assetValidator.validateSortDirection(String.valueOf(command.sortDirection())),
+                        assetValidator.validateDateRange(command.uploadDateStart(), command.uploadDateEnd())
+                )
+                .then(TraceIdHolder.getTraceId())
                 .doOnNext(traceId -> log.info("[traceId={}] Handling asset search use case", traceId))
                 .thenMany(getAssetsByFilterUseCase.find(command));
     }

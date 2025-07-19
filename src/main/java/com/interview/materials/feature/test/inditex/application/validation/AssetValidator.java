@@ -5,6 +5,7 @@ import com.interview.materials.feature.test.inditex.application.validation.error
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Base64;
@@ -17,28 +18,36 @@ public class AssetValidator {
 
     private static final List<String> ALLOWED_SORT_DIRECTIONS = List.of("ASC", "DESC");
 
-    public void validateEncodedFile(String encodedFile) {
-        if (!isValidBase64(encodedFile)) {
-            throw new InvalidBase64EncodedAssetException("The encoded file is not valid base64.");
-        }
+    public Mono<Void> validateEncodedFile(String encodedFile) {
+        return Mono.fromRunnable(() -> {
+            if (!isValidBase64(encodedFile)) {
+                throw new InvalidBase64EncodedAssetException("The encoded file is not valid base64.");
+            }
+        });
     }
 
-    public void validateContentType(String contentType) {
-        if (!isSupportedContentType(contentType)) {
-            throw new UnsupportedAssetContentTypeException("Unsupported content type: " + contentType);
-        }
+    public Mono<Void> validateContentType(String contentType) {
+        return Mono.fromRunnable(() -> {
+            if (!isSupportedContentType(contentType)) {
+                throw new UnsupportedAssetContentTypeException("Unsupported content type: " + contentType);
+            }
+        });
     }
 
-    public void validateSortDirection(String sortDirection) {
-        if (sortDirection != null && !ALLOWED_SORT_DIRECTIONS.contains(sortDirection.toUpperCase(Locale.ROOT))) {
-            throw new InvalidSortDirectionException("Invalid sort direction: " + sortDirection);
-        }
+    public Mono<Void> validateSortDirection(String sortDirection) {
+        return Mono.fromRunnable(() -> {
+            if (sortDirection != null && !ALLOWED_SORT_DIRECTIONS.contains(sortDirection.toUpperCase(Locale.ROOT))) {
+                throw new InvalidSortDirectionException("Invalid sort direction: " + sortDirection);
+            }
+        });
     }
 
-    public void validateDateRange(LocalDateTime start, LocalDateTime end) {
-        if (start != null && end != null && start.isAfter(end)) {
-            throw new InvalidDateRangeException("Start date must be before or equal to end date.");
-        }
+    public Mono<Void> validateDateRange(LocalDateTime start, LocalDateTime end) {
+        return Mono.fromRunnable(() -> {
+            if (start != null && end != null && start.isAfter(end)) {
+                throw new InvalidDateRangeException("Start date must be before or equal to end date.");
+            }
+        });
     }
 
     private boolean isValidBase64(String input) {
@@ -51,6 +60,7 @@ public class AssetValidator {
     }
 
     private boolean isSupportedContentType(String contentType) {
+        // For example, we can support image and video types
         return Objects.nonNull(contentType) && (
                 contentType.startsWith("image/") ||
                         contentType.startsWith("video/")

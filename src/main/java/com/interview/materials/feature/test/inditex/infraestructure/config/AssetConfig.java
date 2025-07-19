@@ -7,7 +7,6 @@ import com.interview.materials.feature.test.inditex.application.usecase.UploadAs
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
 import com.interview.materials.feature.test.inditex.infraestructure.repos.impl.AssetRepositoryImpl;
-import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,12 +17,11 @@ import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 public class AssetConfig {
 
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
-    private final AssetEntityRepositoryR2dbc assetEntityRepositoryR2dbc;
     private final AssetValidator assetValidator;
 
     @Bean
     public AssetRepository assetRepositoryR2dbc() {
-        return new AssetRepositoryImpl(r2dbcEntityTemplate, assetEntityRepositoryR2dbc);
+        return new AssetRepositoryImpl(r2dbcEntityTemplate);
     }
 
     @Bean
