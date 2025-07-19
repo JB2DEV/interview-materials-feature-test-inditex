@@ -5,6 +5,7 @@ import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
 import com.interview.materials.feature.test.inditex.infraestructure.db.entity.AssetEntity;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
+import com.interview.materials.feature.test.inditex.infraestructure.repos.impl.query.AssetQueryBuilder;
 import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @RequiredArgsConstructor
@@ -35,9 +37,30 @@ public class AssetRepositoryImpl implements AssetRepository {
     }
 
     @Override
-    public Flux<Asset> findByFilters(String filename, String fileType, LocalDateTime uploadDateStart, LocalDateTime uploadDateEnd, String sortDirection) {
-        // TODO: Implement filtering logic based on the provided parameters
-        return null;
+    public Flux<Asset> findByFilters(String filename, String contentType, LocalDateTime uploadDateStart, LocalDateTime uploadDateEnd, String sortDirection) {
+        return TraceIdHolder.getTraceId().flatMapMany(traceId -> {
+            log.info("[traceId={}] Filtering assets with filename='{}', fileType='{}', uploadDateStart='{}', uploadDateEnd='{}', sortDirection='{}'",
+                    traceId, filename, contentType, uploadDateStart, uploadDateEnd, sortDirection);
+
+            AssetQueryBuilder queryBuilder = new AssetQueryBuilder()
+                    .withFilename(filename)
+                    .withContentType(contentType)
+                    .withUploadDateStart(uploadDateStart)
+                    .withUploadDateEnd(uploadDateEnd)
+                    .withSort(sortDirection);
+
+            return queryBuilder.bindTo(template.getDatabaseClient())
+                    .map((row, meta) -> AssetEntity.builder()
+                            .id(row.get("id", UUID.class))
+                            .filename(row.get("filename", String.class))
+                            .contentType(row.get("content_type", String.class))
+                            .url(row.get("url", String.class))
+                            .size(row.get("size", Long.class))
+                            .uploadDate(row.get("upload_date", LocalDateTime.class))
+                            .build())
+                    .all()
+                    .map(AssetMapper::toDomain);
+        });
     }
 
     @Override

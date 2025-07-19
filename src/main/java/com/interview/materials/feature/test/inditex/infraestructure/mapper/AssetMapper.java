@@ -1,11 +1,15 @@
 package com.interview.materials.feature.test.inditex.infraestructure.mapper;
 
+import com.interview.materials.feature.test.inditex.application.usecase.FindAssetsByFiltersCommand;
 import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetCommand;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import com.interview.materials.feature.test.inditex.infraestructure.db.entity.AssetEntity;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
+import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFilterRequest;
+import com.interview.materials.feature.test.inditex.shared.enums.SortDirection;
+import com.interview.materials.feature.test.inditex.shared.utils.DateParser;
 
 import java.time.LocalDateTime;
 import java.util.Base64;
@@ -49,7 +53,18 @@ public class AssetMapper {
                 .build();
     }
 
-    // Command + Infra URL to Domain
+    // DTO to Command
+    public static FindAssetsByFiltersCommand toCommand(AssetFilterRequest request) {
+        return FindAssetsByFiltersCommand.builder()
+                .filename(request.filename())
+                .contentType(request.filetype())
+                .uploadDateStart(DateParser.parse(request.uploadDateStart()))
+                .uploadDateEnd(DateParser.parse(request.uploadDateEnd()))
+                .sortDirection(SortDirection.from(request.sortDirection()))
+                .build();
+    }
+
+    // Command + URL to Domain
     public static Asset toDomain(UploadAssetCommand command, String uploadedUrl) {
         return Asset.builder()
                 .id(AssetId.of(UUID.randomUUID()))

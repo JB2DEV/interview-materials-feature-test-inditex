@@ -9,5 +9,6 @@ public record ErrorResponse(
         String timestamp,
         List<FieldError> invalidParams
 ) {
-    public record FieldError(String field, String message) {}
+    public record FieldError(String field, String message) {
+    }
 }
