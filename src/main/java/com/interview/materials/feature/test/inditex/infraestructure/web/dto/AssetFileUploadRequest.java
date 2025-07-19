@@ -11,4 +11,5 @@ public record AssetFileUploadRequest(
 
         @NotBlank(message = "contentType cannot be blank")
         String contentType
-) {}
+) {
+}

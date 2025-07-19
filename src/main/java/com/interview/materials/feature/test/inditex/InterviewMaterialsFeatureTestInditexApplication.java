@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class InterviewMaterialsFeatureTestInditexApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(InterviewMaterialsFeatureTestInditexApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(InterviewMaterialsFeatureTestInditexApplication.class, args);
+    }
 
 }

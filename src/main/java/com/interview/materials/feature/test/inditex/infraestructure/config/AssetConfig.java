@@ -1,6 +1,8 @@
 package com.interview.materials.feature.test.inditex.infraestructure.config;
 
+import com.interview.materials.feature.test.inditex.application.service.GetAssetsService;
 import com.interview.materials.feature.test.inditex.application.service.UploadAssetService;
+import com.interview.materials.feature.test.inditex.application.usecase.GetAssetsByFilterUseCase;
 import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
@@ -25,12 +27,22 @@ public class AssetConfig {
     }
 
     @Bean
-    public UploadAssetService uploadAssetService(){
+    public UploadAssetService uploadAssetService() {
         return new UploadAssetService(uploadAssetUseCase(), assetValidator);
+    }
+
+    @Bean
+    public GetAssetsService getAssetsService() {
+        return new GetAssetsService(getAssetsByFilterUseCase(), assetValidator);
     }
 
     @Bean
     public UploadAssetUseCase uploadAssetUseCase() {
         return new UploadAssetUseCase(assetRepositoryR2dbc());
+    }
+
+    @Bean
+    public GetAssetsByFilterUseCase getAssetsByFilterUseCase() {
+        return new GetAssetsByFilterUseCase(assetRepositoryR2dbc());
     }
 }

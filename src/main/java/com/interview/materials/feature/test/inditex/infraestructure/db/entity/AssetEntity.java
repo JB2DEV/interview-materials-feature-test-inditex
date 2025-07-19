@@ -1,11 +1,10 @@
 package com.interview.materials.feature.test.inditex.infraestructure.db.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -30,7 +29,7 @@ public class AssetEntity {
 
     private String url;
 
-    private long size;
+    private Long size;
 
     @CreatedDate
     @Column("upload_date")

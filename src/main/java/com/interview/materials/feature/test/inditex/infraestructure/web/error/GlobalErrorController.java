@@ -1,6 +1,8 @@
 package com.interview.materials.feature.test.inditex.infraestructure.web.error;
 
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
+import com.interview.materials.feature.test.inditex.application.validation.error.InvalidDateRangeException;
+import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
 import com.interview.materials.feature.test.inditex.domain.exception.DomainEntityNotFoundException;
 import com.interview.materials.feature.test.inditex.domain.exception.DomainValidationException;
@@ -50,7 +52,9 @@ public class GlobalErrorController {
 
     @ExceptionHandler({
             InvalidBase64EncodedAssetException.class,
-            UnsupportedAssetContentTypeException.class
+            UnsupportedAssetContentTypeException.class,
+            InvalidDateRangeException.class,
+            InvalidSortDirectionException.class
     })
     public Mono<ResponseEntity<ErrorResponse>> handleApplicationValidation(RuntimeException ex) {
         return TraceIdHolder.getTraceId().flatMap(traceId -> {
