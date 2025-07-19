@@ -22,9 +22,10 @@ public class GetAssetsService {
 
     private final GetAssetsByFilterUseCase getAssetsByFilterUseCase;
     private final AssetValidator assetValidator;
+    private final AssetMapper assetMapper;
 
     public Flux<Asset> find(AssetFilterRequest requestDto) {
-        FindAssetsByFiltersCommand command = AssetMapper.toCommand(requestDto);
+        FindAssetsByFiltersCommand command = assetMapper.toCommand(requestDto);
 
         return Mono.when(
                         assetValidator.validateSortDirection(String.valueOf(command.sortDirection())),

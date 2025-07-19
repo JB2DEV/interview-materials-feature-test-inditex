@@ -21,16 +21,17 @@ import java.util.UUID;
 public class AssetRepositoryImpl implements AssetRepository {
 
     private final R2dbcEntityTemplate template;
+    private final AssetMapper assetMapper;
 
     @Override
     public Mono<Asset> save(Asset asset) {
-        AssetEntity entity = AssetMapper.toPersistence(asset);
+        AssetEntity entity = assetMapper.toPersistence(asset);
         return TraceIdHolder.getTraceId()
                 .doOnNext(traceId ->
                         log.info("[traceId={}] Saving asset with filename='{}'", traceId, entity.getFilename()))
                 .then(template.insert(AssetEntity.class)
                         .using(entity)
-                        .map(AssetMapper::toDomain));
+                        .map(assetMapper::toDomain));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class AssetRepositoryImpl implements AssetRepository {
                             .uploadDate(row.get("upload_date", LocalDateTime.class))
                             .build())
                     .all()
-                    .map(AssetMapper::toDomain);
+                    .map(assetMapper::toDomain);
         });
     }
 }

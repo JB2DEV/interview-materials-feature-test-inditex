@@ -20,6 +20,7 @@ public class UploadAssetService {
 
     private final UploadAssetUseCase uploadAssetUseCase;
     private final AssetValidator assetValidator;
+    private final AssetMapper assetMapper;
 
     public Mono<AssetFileUploadResponse> handle(AssetFileUploadRequest requestDto) {
         return Mono.when(
@@ -27,13 +28,13 @@ public class UploadAssetService {
                         assetValidator.validateContentType(requestDto.contentType())
                 )
                 .then(Mono.defer(() -> {
-                    UploadAssetCommand command = AssetMapper.toCommand(requestDto);
-                    Asset domainAsset = AssetMapper.toDomain(command, generateFinalUrl(requestDto.filename()));
+                    UploadAssetCommand command = assetMapper.toCommand(requestDto);
+                    Asset domainAsset = assetMapper.toDomain(command, generateFinalUrl(requestDto.filename()));
 
                     return TraceIdHolder.getTraceId()
                             .doOnNext(traceId -> log.info("[traceId={}] Handling asset upload use case", traceId))
                             .then(uploadAssetUseCase.upload(domainAsset))
-                            .map(AssetMapper::toResponse);
+                            .map(assetMapper::toResponse);
                 }));
     }
 
