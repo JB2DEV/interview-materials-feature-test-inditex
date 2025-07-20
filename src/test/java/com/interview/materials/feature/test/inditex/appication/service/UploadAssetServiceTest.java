@@ -43,7 +43,6 @@ class UploadAssetServiceTest {
 
     @Test
     void shouldUploadAssetSuccessfully() {
-        // given
         AssetFileUploadRequest request = new AssetFileUploadRequest("file.jpg", "image/jpeg", Base64.getEncoder().encodeToString("data".getBytes()));
         UploadAssetCommand command = UploadAssetCommand.builder()
                 .filename(request.filename())
@@ -72,10 +71,8 @@ class UploadAssetServiceTest {
         when(assetMapper.toDomain(command, "https://assets.cdn.fake/file.jpg")).thenReturn(domainAsset);
         when(assetMapper.toResponse(domainAsset)).thenReturn(expectedResponse);
 
-        // when
         Mono<AssetFileUploadResponse> result = uploadAssetService.handle(request);
 
-        // then
         StepVerifier.create(result)
                 .expectNextMatches(resp -> resp.id().equals(expectedResponse.id()))
                 .verifyComplete();
@@ -83,16 +80,13 @@ class UploadAssetServiceTest {
 
     @Test
     void shouldFailWhenBase64IsInvalid() {
-        // given
         AssetFileUploadRequest request = new AssetFileUploadRequest("file.jpg", "not_base64!!", "image/png");
 
         when(assetValidator.validateEncodedFile("not_base64!!"))
                 .thenReturn(Mono.error(new InvalidBase64EncodedAssetException("The encoded file is not valid base64.")));
 
-        // when
         Mono<AssetFileUploadResponse> result = uploadAssetService.handle(request);
 
-        // then
         StepVerifier.create(result)
                 .expectError(InvalidBase64EncodedAssetException.class)
                 .verify();
@@ -100,17 +94,14 @@ class UploadAssetServiceTest {
 
     @Test
     void shouldFailWhenContentTypeIsInvalid() {
-        // given
         AssetFileUploadRequest request = new AssetFileUploadRequest("file.jpg", "VGhpcyBpcyBhIGZha2UgZW5jb2RlZCBmaWxlIGJvZHk=", "other/png");
 
         when(assetValidator.validateEncodedFile(anyString())).thenReturn(Mono.empty());
         when(assetValidator.validateContentType("other/png"))
                 .thenReturn(Mono.error(new UnsupportedAssetContentTypeException("Unsupported content type: other")));
 
-        // when
         Mono<AssetFileUploadResponse> result = uploadAssetService.handle(request);
 
-        // then
         StepVerifier.create(result)
                 .expectError(UnsupportedAssetContentTypeException.class)
                 .verify();
