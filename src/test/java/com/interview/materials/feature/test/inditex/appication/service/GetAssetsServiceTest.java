@@ -97,12 +97,16 @@ class GetAssetsServiceTest {
         AssetFilterRequest invalidRequest = new AssetFilterRequest(
                 "file.jpg", "image/jpeg", "2024-01-01T00:00:00", "2024-12-31T00:00:00", "ERROR"
         );
+
+        // The mapper will throw the exception when converting
         when(assetMapper.toCommand(invalidRequest))
                 .thenThrow(new InvalidSortDirectionException("Invalid sort direction"));
 
-        // execute
+        // execute and verify
         StepVerifier.create(getAssetsService.find(invalidRequest))
-                .expectError(InvalidSortDirectionException.class)
+                .expectErrorMatches(throwable ->
+                        throwable instanceof InvalidSortDirectionException &&
+                                throwable.getMessage().equals("Invalid sort direction"))
                 .verify();
 
         verify(assetMapper).toCommand(invalidRequest);

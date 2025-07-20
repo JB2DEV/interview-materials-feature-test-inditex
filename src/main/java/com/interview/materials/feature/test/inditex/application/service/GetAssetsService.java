@@ -25,6 +25,7 @@ public class GetAssetsService {
     private final AssetMapper assetMapper;
 
     public Flux<Asset> find(AssetFilterRequest requestDto) {
+        //TODO Fix that. Unit Test are failing because of this
         FindAssetsByFiltersCommand command = assetMapper.toCommand(requestDto);
 
         return Mono.when(
