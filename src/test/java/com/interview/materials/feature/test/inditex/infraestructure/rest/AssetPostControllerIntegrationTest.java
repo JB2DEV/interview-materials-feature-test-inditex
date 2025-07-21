@@ -88,7 +88,7 @@ class AssetPostControllerIntegrationTest {
                                 assertThat(asset.getFilename()).isEqualTo("test.png");
                                 assertThat(asset.getContentType()).isEqualTo("image/png");
                                 assertThat(asset.getUrl()).contains("https://assets.cdn.fake/test.png");
-                                assertThat(asset.getSize()).isEqualTo(expectedSize); // Usamos el tamaño calculado
+                                assertThat(asset.getSize()).isEqualTo(expectedSize);
                             })
                             .verifyComplete();
                 });
@@ -149,5 +149,21 @@ class AssetPostControllerIntegrationTest {
                 .expectBody()
                 .jsonPath("$.message").value(message ->
                         assertThat(message).asString().contains("not valid base64"));
+    }
+
+    @Test
+    void uploadAsset_WithInvalidEndpointCall_ReturnsNotFoundError() {
+        AssetFileUploadRequest request = new AssetFileUploadRequest(
+                "test.txt",
+                "dGVzdCBjb250ZW50",
+                "text/plain"
+        );
+
+        webTestClient.post()
+                .uri("/api/mgmt/2/assets/actions/upload")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 }

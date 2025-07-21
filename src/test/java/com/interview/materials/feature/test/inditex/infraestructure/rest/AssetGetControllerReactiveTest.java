@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-class AssetGetControllerReactiveIntegrationTest {
+class AssetGetControllerReactiveTest {
 
     @Container
     @ServiceConnection
@@ -169,5 +169,13 @@ class AssetGetControllerReactiveIntegrationTest {
                 .expectBody()
                 .jsonPath("$.message").value(message ->
                         assertThat(message).asString().contains("Invalid sort direction"));
+    }
+
+    @Test
+    void getAssets_WithInvalidEndpointCall_ReturnsNotFoundError() {
+        webTestClient.get()
+                .uri("/api/mgmt/2/assets?sortDirection=ASC")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 }

@@ -5,10 +5,6 @@ import com.interview.materials.feature.test.inditex.domain.exception.DomainValid
 
 public class InvalidBase64EncodedAssetException extends DomainValidationException {
 
-    public InvalidBase64EncodedAssetException() {
-        super("The asset must be a valid Base64 encoded string");
-    }
-
     public InvalidBase64EncodedAssetException(String message) {
         super(message);
     }

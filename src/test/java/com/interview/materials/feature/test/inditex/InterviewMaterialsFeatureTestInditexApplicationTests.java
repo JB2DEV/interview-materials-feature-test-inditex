@@ -13,6 +13,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
 @Testcontainers
@@ -37,8 +38,13 @@ class InterviewMaterialsFeatureTestInditexApplicationTests {
         registry.add("spring.r2dbc.password", postgres::getPassword);
     }
 
-    @Autowired(required = false)
+    @Autowired
     private AssetEntityRepositoryR2dbc assetEntityRepository;
+
+    @Test
+    void testMainMethod() {
+        assertDoesNotThrow(() -> InterviewMaterialsFeatureTestInditexApplication.main(new String[]{}));
+    }
 
     @Test
     void contextLoads() {
