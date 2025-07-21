@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-class AssetGetControllerReactiveTest {
+class AssetGetControllerIT {
 
     @Container
     @ServiceConnection
