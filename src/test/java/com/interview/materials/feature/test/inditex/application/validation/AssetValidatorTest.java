@@ -1,6 +1,5 @@
-package com.interview.materials.feature.test.inditex.appication.validation;
+package com.interview.materials.feature.test.inditex.application.validation;
 
-import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidDateRangeException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;

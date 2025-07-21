@@ -1,6 +1,5 @@
-package com.interview.materials.feature.test.inditex.appication.service;
+package com.interview.materials.feature.test.inditex.application.service;
 
-import com.interview.materials.feature.test.inditex.application.service.GetAssetsService;
 import com.interview.materials.feature.test.inditex.application.usecase.FindAssetsByFiltersCommand;
 import com.interview.materials.feature.test.inditex.application.usecase.GetAssetsByFilterUseCase;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;

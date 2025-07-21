@@ -1,6 +1,5 @@
-package com.interview.materials.feature.test.inditex.appication.service;
+package com.interview.materials.feature.test.inditex.application.service;
 
-import com.interview.materials.feature.test.inditex.application.service.UploadAssetService;
 import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetCommand;
 import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
@@ -84,6 +83,8 @@ class UploadAssetServiceTest {
 
         when(assetValidator.validateEncodedFile("not_base64!!"))
                 .thenReturn(Mono.error(new InvalidBase64EncodedAssetException("The encoded file is not valid base64.")));
+        when(assetValidator.validateContentType(anyString()))
+                .thenReturn(Mono.empty());
 
         Mono<AssetFileUploadResponse> result = uploadAssetService.handle(request);
 
