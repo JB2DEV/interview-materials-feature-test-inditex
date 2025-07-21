@@ -4,17 +4,14 @@ import com.interview.materials.feature.test.inditex.application.validation.error
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidDateRangeException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
-import com.interview.materials.feature.test.inditex.domain.exception.DomainEntityNotFoundException;
-import com.interview.materials.feature.test.inditex.domain.exception.DomainValidationException;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
-import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.reactive.resource.NoResourceFoundException;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
@@ -26,27 +23,11 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalErrorController {
 
-    @ExceptionHandler(Exception.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleGeneric(Exception ex) {
+    @ExceptionHandler(NoResourceFoundException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleNotFound(NoResourceFoundException ex) {
         return TraceIdHolder.getTraceId().flatMap(traceId -> {
-            log.error("[traceId={}] Unhandled exception: {}", traceId, ex.getMessage(), ex);
-            return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred.");
-        });
-    }
-
-    @ExceptionHandler(DomainEntityNotFoundException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleNotFound(DomainEntityNotFoundException ex) {
-        return TraceIdHolder.getTraceId().flatMap(traceId -> {
-            log.warn("[traceId={}] Entity not found: {}", traceId, ex.getMessage());
+            log.warn("[traceId={}] Resource not found: {}", traceId, ex.getMessage());
             return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
-        });
-    }
-
-    @ExceptionHandler(DomainValidationException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleDomainValidation(DomainValidationException ex) {
-        return TraceIdHolder.getTraceId().flatMap(traceId -> {
-            log.warn("[traceId={}] Domain validation failed: {}", traceId, ex.getMessage());
-            return buildResponse(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
         });
     }
 
@@ -60,21 +41,6 @@ public class GlobalErrorController {
         return TraceIdHolder.getTraceId().flatMap(traceId -> {
             log.warn("[traceId={}] Application validation error: {}", traceId, ex.getMessage());
             return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
-        });
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleConstraintViolation(ConstraintViolationException ex) {
-        return TraceIdHolder.getTraceId().flatMap(traceId -> {
-            log.warn("[traceId={}] Constraint violations: {}", traceId, ex.getMessage());
-
-            List<ErrorResponse.FieldError> errors = ex.getConstraintViolations().stream()
-                    .map(v -> new ErrorResponse.FieldError(
-                            ((PathImpl) v.getPropertyPath()).getLeafNode().getName(),
-                            v.getMessage()))
-                    .toList();
-
-            return buildResponse(HttpStatus.BAD_REQUEST, "Invalid input fields", errors);
         });
     }
 

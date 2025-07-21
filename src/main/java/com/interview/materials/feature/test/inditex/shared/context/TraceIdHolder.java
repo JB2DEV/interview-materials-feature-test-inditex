@@ -7,6 +7,10 @@ import static com.interview.materials.feature.test.inditex.shared.web.TraceWebFi
 
 public class TraceIdHolder {
 
+    private TraceIdHolder() {
+        // Private constructor to prevent instantiation
+    }
+
     public static final String DEFAULT_TRACE = "N/A";
 
     public static Mono<String> getTraceId() {

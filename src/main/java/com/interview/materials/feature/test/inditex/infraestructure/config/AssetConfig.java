@@ -6,6 +6,7 @@ import com.interview.materials.feature.test.inditex.application.usecase.GetAsset
 import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
+import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.repos.impl.AssetRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,20 +19,21 @@ public class AssetConfig {
 
     private final R2dbcEntityTemplate r2dbcEntityTemplate;
     private final AssetValidator assetValidator;
+    private final AssetMapper assetMapper;
 
     @Bean
     public AssetRepository assetRepositoryR2dbc() {
-        return new AssetRepositoryImpl(r2dbcEntityTemplate);
+        return new AssetRepositoryImpl(r2dbcEntityTemplate,assetMapper);
     }
 
     @Bean
     public UploadAssetService uploadAssetService() {
-        return new UploadAssetService(uploadAssetUseCase(), assetValidator);
+        return new UploadAssetService(uploadAssetUseCase(), assetValidator, assetMapper);
     }
 
     @Bean
     public GetAssetsService getAssetsService() {
-        return new GetAssetsService(getAssetsByFilterUseCase(), assetValidator);
+        return new GetAssetsService(getAssetsByFilterUseCase(), assetValidator, assetMapper);
     }
 
     @Bean

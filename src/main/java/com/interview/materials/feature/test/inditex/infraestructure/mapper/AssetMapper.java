@@ -10,15 +10,17 @@ import com.interview.materials.feature.test.inditex.infraestructure.web.dto.Asse
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFilterRequest;
 import com.interview.materials.feature.test.inditex.shared.enums.SortDirection;
 import com.interview.materials.feature.test.inditex.shared.utils.DateParser;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.UUID;
 
+@Component
 public class AssetMapper {
 
     // Domain to Persistence
-    public static AssetEntity toPersistence(Asset asset) {
+    public AssetEntity toPersistence(Asset asset) {
         return AssetEntity.builder()
                 .id(asset.getId().getValue())
                 .filename(asset.getFilename())
@@ -30,7 +32,7 @@ public class AssetMapper {
     }
 
     // Persistence to Domain
-    public static Asset toDomain(AssetEntity entity) {
+    public Asset toDomain(AssetEntity entity) {
         return Asset.builder()
                 .id(AssetId.of(entity.getId()))
                 .filename(entity.getFilename())
@@ -42,7 +44,7 @@ public class AssetMapper {
     }
 
     // DTO to Command
-    public static UploadAssetCommand toCommand(AssetFileUploadRequest dto) {
+    public UploadAssetCommand toCommand(AssetFileUploadRequest dto) {
         long size = Base64.getDecoder().decode(dto.encodedFile()).length;
 
         return UploadAssetCommand.builder()
@@ -54,7 +56,7 @@ public class AssetMapper {
     }
 
     // DTO to Command
-    public static FindAssetsByFiltersCommand toCommand(AssetFilterRequest request) {
+    public FindAssetsByFiltersCommand toCommand(AssetFilterRequest request) {
         return FindAssetsByFiltersCommand.builder()
                 .filename(request.filename())
                 .contentType(request.filetype())
@@ -65,7 +67,7 @@ public class AssetMapper {
     }
 
     // Command + URL to Domain
-    public static Asset toDomain(UploadAssetCommand command, String uploadedUrl) {
+    public Asset toDomain(UploadAssetCommand command, String uploadedUrl) {
         return Asset.builder()
                 .id(AssetId.of(UUID.randomUUID()))
                 .filename(command.filename())
@@ -77,7 +79,7 @@ public class AssetMapper {
     }
 
     // Domain to DTO
-    public static AssetFileUploadResponse toResponse(Asset asset) {
+    public AssetFileUploadResponse toResponse(Asset asset) {
         return new AssetFileUploadResponse(asset.getId().getValue().toString());
     }
 }
