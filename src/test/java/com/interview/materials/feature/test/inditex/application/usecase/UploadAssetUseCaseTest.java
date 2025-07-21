@@ -1,6 +1,5 @@
-package com.interview.materials.feature.test.inditex.appication.usecase;
+package com.interview.materials.feature.test.inditex.application.usecase;
 
-import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
