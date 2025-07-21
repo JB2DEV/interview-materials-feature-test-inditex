@@ -4,10 +4,34 @@ services:
   postgres:
     image: postgres:15
     container_name: asset-postgres
-    restart: always
     ports:
       - "5432:5432"
     environment:
       POSTGRES_DB: assetdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - asset-net
+  app:
+    build: .
+    container_name: asset-api
+    depends_on:
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_HOST: asset-postgres
+      POSTGRES_DB: assetdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - asset-net
+
+volumes:
+  postgres-data:
+
+networks:
+  asset-net:

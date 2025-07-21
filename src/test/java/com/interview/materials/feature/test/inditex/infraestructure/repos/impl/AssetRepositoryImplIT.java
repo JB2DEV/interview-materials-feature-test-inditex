@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Testcontainers
-class AssetRepositoryImplIntegrationTest {
+class AssetRepositoryImplIT {
 
     @Container
     @ServiceConnection

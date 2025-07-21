@@ -1,0 +1,15 @@
+spring:
+  config.activate.on-profile: docker
+  r2dbc:
+    url: r2dbc:postgresql://${POSTGRES_HOST:asset-postgres}:5432/${POSTGRES_DB:assetdb}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    pool:
+      initial-size: 5
+      max-size: 20
+
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
+    io.r2dbc.postgresql.QUERY: DEBUG
+

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
 @Testcontainers
-class InterviewMaterialsFeatureTestInditexApplicationTests {
+class InterviewMaterialsFeatureTestInditexApplicationIT {
 
     @Container
     @ServiceConnection
