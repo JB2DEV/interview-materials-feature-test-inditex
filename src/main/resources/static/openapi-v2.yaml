@@ -1,0 +1,332 @@
+openapi: 3.0.3
+info:
+  title: Asset Manager
+  description: |-
+    This API definition describes asset (pictures, videos) management operations.
+  contact:
+    email: javier.alca.2000@gmail.com
+  version: 2.0.0
+tags:
+  - name: asset
+paths:
+  /api/mgmt/1/assets/actions/upload:
+    post:
+      tags:
+        - asset
+      summary: Performs an upload of the requested asset file. 
+      description: Performs an upload of the requested asset file. 
+      operationId: uploadAssetFile
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssetFileUploadRequest'
+        required: true
+      responses:
+        '202':
+          description: The operation was accepted by the backend.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetFileUploadResponse'
+        '400':
+          description: Bad request due to validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidBase64:
+                  value:
+                    status: 400
+                    error: Bad Request
+                    message: The encoded file is not valid base64.
+                    timestamp: "2025-07-22 10:00:00"
+                    invalidParams: null
+                UnsupportedContentType:
+                  value:
+                    status: 400
+                    error: Bad Request
+                    message: "Unsupported content type: other/png"
+                    timestamp: "2025-07-22 10:00:00"
+                    invalidParams: null
+                FieldValidation:
+                  value:
+                    status: 400
+                    error: Bad Request
+                    message: One or more fields are invalid
+                    timestamp: "2025-07-22 10:00:00"
+                    errors:
+                      - field: filename
+                        message: filename cannot be blank
+                      - field: contentType
+                        message: contentType cannot be blank
+        '401':
+          description: Unauthorized – missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden – insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/mgmt/1/assets/:
+    get: 
+      tags:
+        - asset
+      summary: Allows searching (& filtering) all the uploaded/registered assets.
+      description: Allows searching (& filtering) all the uploaded/registered assets.
+      operationId: getAssetsByFilter
+      parameters:
+        - $ref: '#/components/parameters/UploadDateStart'
+        - $ref: '#/components/parameters/UploadDateEnd'
+        - $ref: '#/components/parameters/Filename'
+        - $ref: '#/components/parameters/Filetype'
+        - $ref: '#/components/parameters/SortDirection'
+        - name: page
+          in: query
+          description: Page number (zero-based).
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: size
+          in: query
+          description: Number of items per page.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Returns a paginated list of assets matching the specified criteria.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaginatedAssetResponse'
+        '400':
+          description: Bad request due to validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                InvalidDateRange:
+                  value:
+                    status: 400
+                    error: Bad Request
+                    message: Start date must be before or equal to end date.
+                    timestamp: "2025-07-22 10:00:00"
+                    invalidParams: null
+                InvalidSortDirection:
+                  value:
+                    status: 400
+                    error: Bad Request
+                    message: "Invalid sort direction: ASCENDING"
+                    timestamp: "2025-07-22 10:00:00"
+                    invalidParams: null
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    UploadDateStart:
+      in: query
+      name: uploadDateStart
+      description: The start date for the range. 
+      schema:
+        type: string
+        format: date-time
+    UploadDateEnd:
+      in: query
+      name: uploadDateEnd
+      description: The end date for the range.
+      schema:
+        type: string
+        format: date-time
+    Filename:
+      in: query
+      name: filename
+      description: The filename expression for file filtering (regex). 
+      schema:
+        type: string
+    Filetype:
+      in: query
+      name: filetype
+      description: The file types for file filtering (one at a time).
+      schema:
+        type: string
+    SortDirection: 
+      in: query
+      name: sortDirection
+      schema:
+        type: string
+        enum:
+          - ASC
+          - DESC
+  schemas:
+    Asset:
+      example:
+        id: "123e4567-e89b-12d3-a456-426614174000"
+        filename: "img.png"
+        contentType: "image/png"
+        url: "https://cdn.example.com/assets/img.png"
+        size: 2048
+        uploadDate: "2025-07-22T10:00:00Z"
+      type: object
+      description: Represents an asset. 
+      properties:
+        id: 
+          type: string 
+          description: Unique file identifier. 
+        filename: 
+          type: string 
+          description: Name of the asset. 
+        contentType:
+          type: string 
+          description: The file type. 
+        url:
+          type: string 
+          description: The URL of the uploaded/published asset.
+        size:
+          type: integer
+          description: The actual file size. 
+        uploadDate:
+          type: string
+          description: The date & time the file was uploaded. 
+    AssetFileUploadRequest:
+      type: object
+      description: Represents a file upload request.
+      required:
+        - filename
+        - encodedFile
+        - contentType
+      properties:
+        filename: 
+          type: string 
+          format: string
+          example: img.png
+          description: The filename associated to the asset being uploaded. 
+        encodedFile:
+          type: string 
+          format: byte
+          description: The actual file to be uploaded.
+        contentType:
+          type: string 
+          description: The filetype according to the MIME type (IANA) definition.
+    AssetFileUploadResponse: 
+      type: object
+      description: Represents a file upload response. 
+      properties:
+        id:
+          type: string 
+          description: Unique identifier for the requested file upload.
+    PaginatedAssetResponse:
+      type: object
+      description: A paginated response containing a list of assets.
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+        page:
+          type: integer
+          description: Current page number (zero-based).
+          example: 0
+        size:
+          type: integer
+          description: Number of items per page.
+          example: 20
+        totalElements:
+          type: integer
+          description: Total number of elements matching the filter.
+          example: 145
+        totalPages:
+          type: integer
+          description: Total number of pages.
+          example: 8
+        last:
+          type: boolean
+          description: Whether this is the last page.
+          example: false
+        first:
+          type: boolean
+          description: Whether this is the first page.
+          example: true
+        numberOfElements:
+          type: integer
+          description: Number of elements in the current page.
+          example: 20
+    ErrorResponse:
+      type: object
+      description: Standard error response format
+      properties:
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        error:
+          type: string
+          description: HTTP status message
+          example: Bad Request
+        message:
+          type: string
+          description: Error message
+          example: Invalid sort direction
+        timestamp:
+          type: string
+          description: When the error occurred
+          example: "2025-07-22 10:00:00"
+        invalidParams:
+          type: array
+          description: List of field validation errors
+          items:
+            $ref: '#/components/schemas/FieldError'
+    FieldError:
+      type: object
+      description: Field validation error details
+      properties:
+        field:
+          type: string
+          description: Name of the invalid field
+          example: contentType
+        message:
+          type: string
+          description: Error message for the field
+          example: must be a valid MIME type

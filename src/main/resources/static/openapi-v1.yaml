@@ -13,8 +13,8 @@ paths:
     post:
       tags:
         - asset
-      summary: Performs an upload of the requested asset file. 
-      description: Performs an upload of the requested asset file. 
+      summary: Performs an upload of the requested asset file.
+      description: Performs an upload of the requested asset file.
       operationId: uploadAssetFile
       requestBody:
         content:
@@ -32,7 +32,7 @@ paths:
         '500':
           description: An unexpected error occurred.
   /api/mgmt/1/assets/:
-    get: 
+    get:
       tags:
         - asset
       summary: Allows searching (& filtering) all the uploaded/registered assets.
@@ -45,7 +45,7 @@ paths:
         - $ref: '#/components/parameters/Filetype'
         - $ref: '#/components/parameters/SortDirection'
       responses:
-        '200': 
+        '200':
           description: Returns a list of assets matching the specified criteria.
           content:
             application/json:
@@ -56,13 +56,13 @@ paths:
         '400':
           description: Malformed request.
         '500':
-          description: An unexpected error occurred.                  
+          description: An unexpected error occurred.
 components:
   parameters:
     UploadDateStart:
       in: query
       name: uploadDateStart
-      description: The start date for the range. 
+      description: The start date for the range.
       schema:
         type: string
     UploadDateEnd:
@@ -74,7 +74,7 @@ components:
     Filename:
       in: query
       name: filename
-      description: The filename expression for file filtering (regex). 
+      description: The filename expression for file filtering (regex).
       schema:
         type: string
     Filetype:
@@ -83,7 +83,7 @@ components:
       description: The file types for file filtering (one at a time).
       schema:
         type: string
-    SortDirection: 
+    SortDirection:
       in: query
       name: sortDirection
       schema:
@@ -94,46 +94,46 @@ components:
   schemas:
     Asset:
       type: object
-      description: Represents an asset. 
+      description: Represents an asset.
       properties:
-        id: 
-          type: string 
-          description: Unique file identifier. 
-        filename: 
-          type: string 
-          description: Name of the asset. 
+        id:
+          type: string
+          description: Unique file identifier.
+        filename:
+          type: string
+          description: Name of the asset.
         contentType:
-          type: string 
-          description: The file type. 
+          type: string
+          description: The file type.
         url:
-          type: string 
+          type: string
           description: The URL of the uploaded/published asset.
         size:
           type: integer
-          description: The actual file size. 
+          description: The actual file size.
         uploadDate:
           type: string
-          description: The date & time the file was uploaded. 
+          description: The date & time the file was uploaded.
     AssetFileUploadRequest:
       type: object
-      description: Represents a file upload request. 
+      description: Represents a file upload request.
       properties:
-        filename: 
-          type: string 
+        filename:
+          type: string
           format: string
           example: img.png
-          description: The filename associated to the asset being uploaded. 
+          description: The filename associated to the asset being uploaded.
         encodedFile:
-          type: string 
+          type: string
           format: byte
           description: The actual file to be uploaded.
         contentType:
-          type: string 
+          type: string
           description: The filetype according to the MIME type (IANA) definition.
-    AssetFileUploadResponse: 
+    AssetFileUploadResponse:
       type: object
-      description: Represents a file upload response. 
+      description: Represents a file upload response.
       properties:
         id:
-          type: string 
+          type: string
           description: Unique identifier for the requested file upload.
