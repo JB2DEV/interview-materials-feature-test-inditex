@@ -1,6 +1,6 @@
 package com.interview.materials.feature.test.inditex.infraestructure.web.rest;
 
-import com.interview.materials.feature.test.inditex.application.service.UploadAssetService;
+import com.interview.materials.feature.test.inditex.domain.service.UploadAssetService;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;

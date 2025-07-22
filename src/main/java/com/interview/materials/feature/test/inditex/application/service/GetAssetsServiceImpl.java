@@ -1,9 +1,9 @@
 package com.interview.materials.feature.test.inditex.application.service;
 
-import com.interview.materials.feature.test.inditex.application.usecase.FindAssetsByFiltersCommand;
-import com.interview.materials.feature.test.inditex.application.usecase.GetAssetsByFilterUseCase;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
+import com.interview.materials.feature.test.inditex.domain.service.GetAssetsService;
+import com.interview.materials.feature.test.inditex.domain.usecase.GetAssetsByFilterUseCase;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFilterRequest;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
@@ -14,17 +14,16 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GetAssetsService {
+public class GetAssetsServiceImpl implements GetAssetsService {
 
     private final GetAssetsByFilterUseCase getAssetsByFilterUseCase;
     private final AssetValidator assetValidator;
     private final AssetMapper assetMapper;
 
+    @Override
     public Flux<Asset> find(AssetFilterRequest requestDto) {
         Mono<Void> sortValidation = assetValidator.validateSortDirection(requestDto.sortDirection());
         Mono<Void> dateRangeValidation = (requestDto.uploadDateStart() != null && requestDto.uploadDateEnd() != null)

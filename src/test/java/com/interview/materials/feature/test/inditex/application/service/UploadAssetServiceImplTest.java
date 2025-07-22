@@ -1,12 +1,12 @@
 package com.interview.materials.feature.test.inditex.application.service;
 
 import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetCommand;
-import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
+import com.interview.materials.feature.test.inditex.domain.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UploadAssetServiceTest {
+class UploadAssetServiceImplTest {
 
     @Mock
     private UploadAssetUseCase uploadAssetUseCase;
@@ -38,7 +38,7 @@ class UploadAssetServiceTest {
     private AssetMapper assetMapper;
 
     @InjectMocks
-    private UploadAssetService uploadAssetService;
+    private UploadAssetServiceImpl uploadAssetServiceImpl;
 
     @Test
     void shouldUploadAssetSuccessfully() {
@@ -70,7 +70,7 @@ class UploadAssetServiceTest {
         when(assetMapper.toDomain(command, "https://assets.cdn.fake/file.jpg")).thenReturn(domainAsset);
         when(assetMapper.toResponse(domainAsset)).thenReturn(expectedResponse);
 
-        Mono<AssetFileUploadResponse> result = uploadAssetService.handle(request);
+        Mono<AssetFileUploadResponse> result = uploadAssetServiceImpl.handle(request);
 
         StepVerifier.create(result)
                 .expectNextMatches(resp -> resp.id().equals(expectedResponse.id()))
@@ -86,7 +86,7 @@ class UploadAssetServiceTest {
         when(assetValidator.validateContentType(anyString()))
                 .thenReturn(Mono.empty());
 
-        Mono<AssetFileUploadResponse> result = uploadAssetService.handle(request);
+        Mono<AssetFileUploadResponse> result = uploadAssetServiceImpl.handle(request);
 
         StepVerifier.create(result)
                 .expectError(InvalidBase64EncodedAssetException.class)
@@ -101,7 +101,7 @@ class UploadAssetServiceTest {
         when(assetValidator.validateContentType("other/png"))
                 .thenReturn(Mono.error(new UnsupportedAssetContentTypeException("Unsupported content type: other")));
 
-        Mono<AssetFileUploadResponse> result = uploadAssetService.handle(request);
+        Mono<AssetFileUploadResponse> result = uploadAssetServiceImpl.handle(request);
 
         StepVerifier.create(result)
                 .expectError(UnsupportedAssetContentTypeException.class)
