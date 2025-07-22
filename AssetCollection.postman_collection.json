@@ -1,0 +1,743 @@
+{
+	"info": {
+		"_postman_id": "45bbe12e-5c12-44db-b773-79e0101e11ca",
+		"name": "AssetCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42718574"
+	},
+	"item": [
+		{
+			"name": "Upload",
+			"item": [
+				{
+					"name": "POST - Upload Asset (valid)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"filename\": \"new-image.jpg\",\r\n  \"contentType\": \"image/jpg\",\r\n  \"encodedFile\": \"VGhpcyBpcyBhIGZha2UgZW5jb2RlZCBmaWxlIGJvZHk=\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets/actions/upload",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets",
+								"actions",
+								"upload"
+							]
+						},
+						"description": "Uploads a valid image asset with all fields."
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Upload Asset (missing all fields)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"filename\" : \"\",\r\n  \"contentType\": \"\",\r\n  \"encodedFile\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets/actions/upload",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets",
+								"actions",
+								"upload"
+							]
+						},
+						"description": "Tries to upload with all fields empty."
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Upload Asset (missing filename)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contentType\": \"image/jpg\",\r\n  \"encodedFile\": \"VGhpcyBpcyBhIGZha2UgZW5jb2RlZCBmaWxlIGJvZHk=\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets/actions/upload",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets",
+								"actions",
+								"upload"
+							]
+						},
+						"description": "Tries to upload without filename."
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Upload Asset (missing contentType)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"filename\": \"new-image.jpg\",\r\n  \"encodedFile\": \"VGhpcyBpcyBhIGZha2UgZW5jb2RlZCBmaWxlIGJvZHk=\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets/actions/upload",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets",
+								"actions",
+								"upload"
+							]
+						},
+						"description": "Tries to upload without contentType."
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Upload Asset (missing encodedFile)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"filename\": \"new-image.jpg\",\r\n  \"contentType\": \"image/jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets/actions/upload",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets",
+								"actions",
+								"upload"
+							]
+						},
+						"description": "Tries to upload without encodedFile."
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Upload Asset (invalid base64)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"filename\": \"image.png\",\r\n  \"contentType\": \"image/png\",\r\n  \"encodedFile\": \"NOT_BASE64!!\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets/actions/upload",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets",
+								"actions",
+								"upload"
+							]
+						},
+						"description": "Triggers base64 validation error."
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Upload Asset (unsupported content type)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"filename\": \"example-image.png\",\r\n  \"contentType\": \"other/png\",\r\n  \"encodedFile\": \"VGhpcyBpcyBhIGZha2UgZW5jb2RlZCBmaWxlIGJvZHk=\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets/actions/upload",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets",
+								"actions",
+								"upload"
+							]
+						},
+						"description": "Triggers content type validation error."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "GET - Get all assets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							]
+						},
+						"description": "Returns all registered assets."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Filter by filename",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?filename=example",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "filename",
+									"value": "example"
+								}
+							]
+						},
+						"description": "Returns assets matching filename."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Filter by filename (no match)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?filename=other",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "filename",
+									"value": "other"
+								}
+							]
+						},
+						"description": "No asset found with this filename."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Filter by filetype",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?filetype=image/jpg",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "filetype",
+									"value": "image/jpg"
+								}
+							]
+						},
+						"description": "Returns assets matching filetype."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Filter by filetype (no match)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?filetype=image/gif",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "filetype",
+									"value": "image/gif"
+								}
+							]
+						},
+						"description": "No asset found with this filetype."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Filter by start upload date",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?uploadDateStart=2025-07-15T00:00:00",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "uploadDateStart",
+									"value": "2025-07-15T00:00:00"
+								}
+							]
+						},
+						"description": "Returns assets uploaded after a given date."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Filter by start upload date (no match)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?uploadDateStart=2025-09-20T00:00:00",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "uploadDateStart",
+									"value": "2025-09-20T00:00:00"
+								}
+							]
+						},
+						"description": "No assets match the given start date."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Filter by upload date range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?uploadDateStart=2025-07-10T00:00:00&uploadDateEnd=2025-08-19T23:59:59",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "uploadDateStart",
+									"value": "2025-07-10T00:00:00"
+								},
+								{
+									"key": "uploadDateEnd",
+									"value": "2025-08-19T23:59:59"
+								}
+							]
+						},
+						"description": "Returns assets between two dates."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Filter by upload date range (no match)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?uploadDateStart=2025-09-18T00:00:00&uploadDateEnd=2025-09-19T23:59:59",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "uploadDateStart",
+									"value": "2025-09-18T00:00:00"
+								},
+								{
+									"key": "uploadDateEnd",
+									"value": "2025-09-19T23:59:59"
+								}
+							]
+						},
+						"description": "No assets match the given date range."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Upload date range (invalid)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?uploadDateStart=2025-07-20T00:00:00&uploadDateEnd=2025-07-01T00:00:00",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "uploadDateStart",
+									"value": "2025-07-20T00:00:00"
+								},
+								{
+									"key": "uploadDateEnd",
+									"value": "2025-07-01T00:00:00"
+								}
+							]
+						},
+						"description": "Start date is after end date."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Sorted by upload date (DESC)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?sortDirection=DESC",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "sortDirection",
+									"value": "DESC"
+								}
+							]
+						},
+						"description": "Returns assets sorted by upload date descending."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Sorted by upload date (ASC)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?sortDirection=ASC",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "sortDirection",
+									"value": "ASC"
+								}
+							]
+						},
+						"description": "Returns assets sorted by upload date ascending."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Invalid sort direction",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?sortDirection=ERROR",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "sortDirection",
+									"value": "ERROR"
+								}
+							]
+						},
+						"description": "Triggers invalid sort direction error."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Filter by all parameters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets?filename=image&filetype=image/jpg&uploadDateStart=2025-07-01T00:00:00&uploadDateEnd=2025-07-31T23:59:59&sortDirection=DESC",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets"
+							],
+							"query": [
+								{
+									"key": "filename",
+									"value": "image"
+								},
+								{
+									"key": "filetype",
+									"value": "image/jpg"
+								},
+								{
+									"key": "uploadDateStart",
+									"value": "2025-07-01T00:00:00"
+								},
+								{
+									"key": "uploadDateEnd",
+									"value": "2025-07-31T23:59:59"
+								},
+								{
+									"key": "sortDirection",
+									"value": "DESC"
+								}
+							]
+						},
+						"description": "All filters combined (disabled by default)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "GET - Actuator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/actuator",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"actuator"
+							]
+						},
+						"description": "Checks if the application is alive."
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Health check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{baseUrl}}/actuator/health",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						},
+						"description": "Checks if the application is alive."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "localhost:8080",
+			"type": "default"
+		},
+		{
+			"key": "apiVersion",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}
