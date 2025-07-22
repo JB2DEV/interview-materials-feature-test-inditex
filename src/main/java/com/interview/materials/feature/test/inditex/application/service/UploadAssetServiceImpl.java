@@ -1,9 +1,10 @@
 package com.interview.materials.feature.test.inditex.application.service;
 
 import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetCommand;
-import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
+import com.interview.materials.feature.test.inditex.domain.service.UploadAssetService;
+import com.interview.materials.feature.test.inditex.domain.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
@@ -16,7 +17,7 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UploadAssetService {
+public class UploadAssetServiceImpl implements UploadAssetService {
 
     private final UploadAssetUseCase uploadAssetUseCase;
     private final AssetValidator assetValidator;

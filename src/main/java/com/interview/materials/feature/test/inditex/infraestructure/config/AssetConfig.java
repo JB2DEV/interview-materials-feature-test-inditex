@@ -1,11 +1,15 @@
 package com.interview.materials.feature.test.inditex.infraestructure.config;
 
-import com.interview.materials.feature.test.inditex.application.service.GetAssetsService;
-import com.interview.materials.feature.test.inditex.application.service.UploadAssetService;
-import com.interview.materials.feature.test.inditex.application.usecase.GetAssetsByFilterUseCase;
-import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCase;
+import com.interview.materials.feature.test.inditex.application.service.GetAssetsServiceImpl;
+import com.interview.materials.feature.test.inditex.application.service.UploadAssetServiceImpl;
+import com.interview.materials.feature.test.inditex.application.usecase.GetAssetsByFilterUseCaseImpl;
+import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCaseImpl;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
+import com.interview.materials.feature.test.inditex.domain.service.GetAssetsService;
+import com.interview.materials.feature.test.inditex.domain.service.UploadAssetService;
+import com.interview.materials.feature.test.inditex.domain.usecase.GetAssetsByFilterUseCase;
+import com.interview.materials.feature.test.inditex.domain.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.repos.impl.AssetRepositoryImpl;
 import lombok.RequiredArgsConstructor;
@@ -28,21 +32,21 @@ public class AssetConfig {
 
     @Bean
     public UploadAssetService uploadAssetService() {
-        return new UploadAssetService(uploadAssetUseCase(), assetValidator, assetMapper);
+        return new UploadAssetServiceImpl(uploadAssetUseCase(), assetValidator, assetMapper);
     }
 
     @Bean
     public GetAssetsService getAssetsService() {
-        return new GetAssetsService(getAssetsByFilterUseCase(), assetValidator, assetMapper);
+        return new GetAssetsServiceImpl(getAssetsByFilterUseCase(), assetValidator, assetMapper);
     }
 
     @Bean
     public UploadAssetUseCase uploadAssetUseCase() {
-        return new UploadAssetUseCase(assetRepositoryR2dbc());
+        return new UploadAssetUseCaseImpl(assetRepositoryR2dbc());
     }
 
     @Bean
     public GetAssetsByFilterUseCase getAssetsByFilterUseCase() {
-        return new GetAssetsByFilterUseCase(assetRepositoryR2dbc());
+        return new GetAssetsByFilterUseCaseImpl(assetRepositoryR2dbc());
     }
 }

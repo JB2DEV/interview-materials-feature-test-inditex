@@ -18,13 +18,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GetAssetsByFilterUseCaseTest {
+class GetAssetsByFilterUseCaseImplTest {
 
     @Mock
     private AssetRepository assetRepository;
 
     @InjectMocks
-    private GetAssetsByFilterUseCase getAssetsByFilterUseCase;
+    private GetAssetsByFilterUseCaseImpl getAssetsByFilterUseCaseImpl;
 
     @Test
     void find_shouldReturnAssets_whenFiltersMatch() {
@@ -57,7 +57,7 @@ class GetAssetsByFilterUseCaseTest {
                 anyString()))
                 .thenReturn(Flux.just(asset1, asset2));
 
-        StepVerifier.create(getAssetsByFilterUseCase.find(command))
+        StepVerifier.create(getAssetsByFilterUseCaseImpl.find(command))
                 .expectNext(asset1)
                 .expectNext(asset2)
                 .verifyComplete();
@@ -78,7 +78,7 @@ class GetAssetsByFilterUseCaseTest {
         when(assetRepository.findByFilters(any(), any(), any(), any(), any()))
                 .thenReturn(Flux.empty());
 
-        getAssetsByFilterUseCase.find(command).blockLast();
+        getAssetsByFilterUseCaseImpl.find(command).blockLast();
 
         verify(assetRepository).findByFilters(
                 "test.png",
@@ -108,7 +108,7 @@ class GetAssetsByFilterUseCaseTest {
                 any()))
                 .thenReturn(Flux.just(asset));
 
-        StepVerifier.create(getAssetsByFilterUseCase.find(command))
+        StepVerifier.create(getAssetsByFilterUseCaseImpl.find(command))
                 .expectNext(asset)
                 .verifyComplete();
     }
@@ -126,7 +126,7 @@ class GetAssetsByFilterUseCaseTest {
         when(assetRepository.findByFilters(any(), any(), any(), any(), any()))
                 .thenReturn(Flux.empty());
 
-        StepVerifier.create(getAssetsByFilterUseCase.find(command))
+        StepVerifier.create(getAssetsByFilterUseCaseImpl.find(command))
                 .expectNextCount(0)
                 .verifyComplete();
     }

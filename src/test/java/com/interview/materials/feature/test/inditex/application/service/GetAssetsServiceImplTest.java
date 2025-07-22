@@ -1,12 +1,12 @@
 package com.interview.materials.feature.test.inditex.application.service;
 
 import com.interview.materials.feature.test.inditex.application.usecase.FindAssetsByFiltersCommand;
-import com.interview.materials.feature.test.inditex.application.usecase.GetAssetsByFilterUseCase;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidDateRangeException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
+import com.interview.materials.feature.test.inditex.domain.usecase.GetAssetsByFilterUseCase;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFilterRequest;
 import com.interview.materials.feature.test.inditex.shared.enums.SortDirection;
@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class GetAssetsServiceTest {
+class GetAssetsServiceImplTest {
 
     @Mock
     private GetAssetsByFilterUseCase getAssetsByFilterUseCase;
@@ -39,7 +39,7 @@ class GetAssetsServiceTest {
     private AssetMapper assetMapper;
 
     @InjectMocks
-    private GetAssetsService getAssetsService;
+    private GetAssetsServiceImpl getAssetsServiceImpl;
 
     private AssetFilterRequest request;
     private FindAssetsByFiltersCommand command;
@@ -81,7 +81,7 @@ class GetAssetsServiceTest {
         when(assetValidator.validateDateRange(command.uploadDateStart(), command.uploadDateEnd())).thenReturn(Mono.empty());
         when(getAssetsByFilterUseCase.find(command)).thenReturn(Flux.just(testAsset));
 
-        StepVerifier.create(getAssetsService.find(request))
+        StepVerifier.create(getAssetsServiceImpl.find(request))
                 .expectNext(testAsset)
                 .verifyComplete();
 
@@ -113,7 +113,7 @@ class GetAssetsServiceTest {
         when(assetValidator.validateSortDirection("ASC")).thenReturn(Mono.empty());
         when(getAssetsByFilterUseCase.find(command)).thenReturn(Flux.just(testAsset));
 
-        StepVerifier.create(getAssetsService.find(request))
+        StepVerifier.create(getAssetsServiceImpl.find(request))
                 .expectNext(testAsset)
                 .verifyComplete();
 
@@ -133,7 +133,7 @@ class GetAssetsServiceTest {
                 "INVALID"
         );
 
-        StepVerifier.create(getAssetsService.find(request))
+        StepVerifier.create(getAssetsServiceImpl.find(request))
                 .expectError(InvalidSortDirectionException.class)
                 .verify();
 
@@ -158,7 +158,7 @@ class GetAssetsServiceTest {
                 LocalDateTime.parse("2024-01-01T00:00:00")))
                 .thenReturn(Mono.error(new InvalidDateRangeException("Invalid date range")));
 
-        StepVerifier.create(getAssetsService.find(invalidDateRequest))
+        StepVerifier.create(getAssetsServiceImpl.find(invalidDateRequest))
                 .expectError(InvalidDateRangeException.class)
                 .verify();
 
@@ -177,7 +177,7 @@ class GetAssetsServiceTest {
         when(assetValidator.validateDateRange(command.uploadDateStart(), command.uploadDateEnd())).thenReturn(Mono.empty());
         when(getAssetsByFilterUseCase.find(command)).thenReturn(Flux.empty());
 
-        StepVerifier.create(getAssetsService.find(request))
+        StepVerifier.create(getAssetsServiceImpl.find(request))
                 .expectNextCount(0)
                 .verifyComplete();
     }

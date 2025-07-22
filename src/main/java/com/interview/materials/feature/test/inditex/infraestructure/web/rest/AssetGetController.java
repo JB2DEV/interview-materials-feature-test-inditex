@@ -1,7 +1,8 @@
 package com.interview.materials.feature.test.inditex.infraestructure.web.rest;
 
-import com.interview.materials.feature.test.inditex.application.service.GetAssetsService;
+import com.interview.materials.feature.test.inditex.application.service.GetAssetsServiceImpl;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
+import com.interview.materials.feature.test.inditex.domain.service.GetAssetsService;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFilterRequest;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
 import lombok.RequiredArgsConstructor;

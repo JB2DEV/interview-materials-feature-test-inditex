@@ -18,13 +18,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UploadAssetUseCaseTest {
+class UploadAssetUseCaseImplTest {
 
     @Mock
     private AssetRepository assetRepository;
 
     @InjectMocks
-    private UploadAssetUseCase uploadAssetUseCase;
+    private UploadAssetUseCaseImpl uploadAssetUseCaseImpl;
 
     @Test
     void upload_shouldReturnSavedAsset_whenRepositorySucceeds() {
@@ -34,7 +34,7 @@ class UploadAssetUseCaseTest {
         when(assetRepository.save(any(Asset.class)))
                 .thenReturn(Mono.just(savedAsset));
 
-        StepVerifier.create(uploadAssetUseCase.upload(inputAsset))
+        StepVerifier.create(uploadAssetUseCaseImpl.upload(inputAsset))
                 .expectNextMatches(asset ->
                         asset.getId() != null &&
                                 asset.getFilename().equals("test-file.png") &&
@@ -50,7 +50,7 @@ class UploadAssetUseCaseTest {
         when(assetRepository.save(any(Asset.class)))
                 .thenReturn(Mono.just(savedAsset));
 
-        uploadAssetUseCase.upload(inputAsset).block();
+        uploadAssetUseCaseImpl.upload(inputAsset).block();
 
         verify(assetRepository, times(1)).save(inputAsset);
     }
