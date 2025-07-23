@@ -1,4 +1,12 @@
 # Changelog
+## [1.0.1] – 2025-07-23
+### Added
+- Validation pattern on `AssetFileUploadRequest` for Base64 encoding via `@Pattern` annotation
+### Changed
+- Reorganized into clear Domain, Application, and Infrastructure modules following Hexagonal Architecture with `ports` and `adapters`
+### Removed
+- Removed `InvalidBase64EncodedAssetException`
+- Removed redundant manual bean wiring in `AssetConfig`, relying instead on automatic component scanning for all infrastructure adapters.
 
 ## [1.0.0] – 2025-07-23
 ### Added
