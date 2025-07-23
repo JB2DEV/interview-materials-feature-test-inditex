@@ -22,13 +22,13 @@ The project follows a layered architecture:
 
 ### Controllers
 
-- **[`AssetGetRestControllerAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infraestructure/adapter/in/rest/AssetGetRestControllerAdapter.java)**: Handles GET requests to retrieve assets.
-- **[`AssetPostRestControllerAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infraestructure/adapter/in/rest/AssetPostRestControllerAdapter.java)**: Handles POST requests to upload new assets.
+- **[`AssetGetRestControllerAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/in/rest/AssetGetRestControllerAdapter.java)**: Handles GET requests to retrieve assets.
+- **[`AssetPostRestControllerAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/in/rest/AssetPostRestControllerAdapter.java)**: Handles POST requests to upload new assets.
 
 ### Services
 
-- **[`GetAssetsServiceAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infraestructure/adapter/in/service/GetAssetsServiceAdapter.java)**: Provides logic to fetch assets from the database.
-- **[`UploadAssetServiceAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infraestructure/adapter/in/service/UploadAssetServiceAdapter.java)**: Handles asset upload operations.
+- **[`GetAssetsServiceAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/in/service/GetAssetsServiceAdapter.java)**: Provides logic to fetch assets from the database.
+- **[`UploadAssetServiceAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/in/service/UploadAssetServiceAdapter.java)**: Handles asset upload operations.
 
 ### Use Cases
 
@@ -53,7 +53,7 @@ The [`TraceWebFilter`](./src/main/java/com/interview/materials/feature/test/indi
 
 ## Error Handling
 
-The application uses centralized [`GlobalErrorController`](./src/main/java/com/interview/materials/feature/test/inditex/infraestructure/web/error/GlobalErrorController.java) to log and respond to exceptions gracefully. Custom exceptions are logged using **SLF4J** and returned as meaningful HTTP responses.
+The application uses centralized [`GlobalErrorController`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/web/error/GlobalErrorController.java) to log and respond to exceptions gracefully. Custom exceptions are logged using **SLF4J** and returned as meaningful HTTP responses.
 
 ### Error Codes
 
@@ -101,7 +101,7 @@ This logging setup ensures comprehensive visibility into application operations 
 
 ## Database Initialization
 
-The [`R2dbcSchemaInitializer`](./src/main/java/com/interview/materials/feature/test/inditex/infraestructure/db/config/R2dbcSchemaInitializer.java) class initializes the database schema using the [`schema.sql`](./src/main/resources/schema.sql) file. Errors during initialization are logged.
+The [`R2dbcSchemaInitializer`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/db/config/R2dbcSchemaInitializer.java) class initializes the database schema using the [`schema.sql`](./src/main/resources/schema.sql) file. Errors during initialization are logged.
 
 ---
 
