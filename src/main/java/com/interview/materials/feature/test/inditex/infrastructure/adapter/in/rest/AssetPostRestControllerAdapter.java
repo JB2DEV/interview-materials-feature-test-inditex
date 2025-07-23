@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,11 +29,11 @@ public class AssetPostRestControllerAdapter {
     private final AssetMapper assetMapper;
 
     @PostMapping("/upload")
-    public Mono<ResponseEntity<AssetFileUploadResponse>> uploadAsset(@Valid @RequestBody AssetFileUploadRequest requestDto) {
+    public Mono<ResponseEntity<AssetFileUploadResponse>> uploadAsset(Mono<Authentication> authentication, @Valid @RequestBody AssetFileUploadRequest requestDto) {
         UploadAssetCommand command = assetMapper.toCommand(requestDto);
-        return TraceIdHolder.getTraceId()
-                .doOnNext(traceId -> log.info("[traceId={}] Upload request received", traceId))
+        return authentication.flatMap(auth -> TraceIdHolder.getTraceId()
+                .doOnNext(traceId -> log.info("[traceId={}] [user={}] Upload request received", traceId, auth.getName()))
                 .then(uploadAssetServicePort.handle(command))
-                .map(response -> ResponseEntity.accepted().body(assetMapper.toResponse(response)));
+                .map(response -> ResponseEntity.accepted().body(assetMapper.toResponse(response))));
     }
 }

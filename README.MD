@@ -37,6 +37,12 @@ The project follows a layered architecture:
 
 ---
 
+## Security
+
+The application uses **Spring Security** to secure endpoints and manage user authentication. The security configuration is defined in the [`SecurityConfig`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/config/SecurityConfig.java) class, which sets up basic authentication and restricts access to certain endpoints.
+
+---
+
 ## Utilities
 
 The [`DateParser`](./src/main/java/com/interview/materials/feature/test/inditex/shared/utils/DateParser.java) class provides utility methods for parsing and formatting dates. It ensures consistent handling of date formats across the application, particularly for filtering assets by date ranges. This utility is designed to handle edge cases and invalid date inputs gracefully.
@@ -64,7 +70,10 @@ The following HTTP status codes are used across the application for error handli
   - `InvalidDateRangeException`: Indicates that the provided date range is invalid.
   - `InvalidSortDirectionException`: Indicates that the sort direction is invalid.
   - `WebExchangeBindException`: Indicates validation errors in the request, providing detailed field-level error messages.
-
+- **401 UNAUTHORIZED**:
+    - `UnauthorizedException`: Indicates that the user is not authorized to access the requested resource.
+- **403 FORBIDDEN**:
+    - `ForbiddenException`: Indicates that the user does not have permission to access the requested resource.
 - **404 NOT FOUND**:
   - `NoResourceFoundException`: Indicates that the requested resource could not be found.
 
@@ -198,9 +207,9 @@ curl http://localhost:8080/actuator/health
 The project includes a Postman collection [`AssetCollection.postman_collection.json`](./AssetCollection.postman_collection.json) to test API endpoints. It contains:
 - **GET /assets**: Retrieve assets.
 - **POST /assets**: Upload new assets.
+- **POST /login**: Authenticate users.
 
 ## Future Improvements
 
 - **Resilient**: Implement retry mechanisms and circuit breakers using libraries like **Resilience4j** to handle transient failures and improve system reliability. Add fallback methods to ensure graceful degradation during service interruptions.
-- **Security**: Enhance security by integrating **Spring Security** for authentication and authorization. Implement token-based authentication (e.g., **JWT**) and secure sensitive endpoints with role-based access control.
 - **Pagination**: Add pagination support to the API responses to handle large datasets efficiently. Use query parameters like page and size to control the pagination behavior.
