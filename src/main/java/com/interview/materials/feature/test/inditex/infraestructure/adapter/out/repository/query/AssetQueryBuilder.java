@@ -1,4 +1,4 @@
-package com.interview.materials.feature.test.inditex.infraestructure.repos.impl.query;
+package com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.query;
 
 import lombok.Getter;
 import org.springframework.r2dbc.core.DatabaseClient;

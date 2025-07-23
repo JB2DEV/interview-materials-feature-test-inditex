@@ -1,7 +1,8 @@
 package com.interview.materials.feature.test.inditex.application.usecase;
 
+import com.interview.materials.feature.test.inditex.application.command.FindAssetsByFiltersCommand;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
-import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
+import com.interview.materials.feature.test.inditex.domain.port.out.repository.AssetRepositoryPort;
 import com.interview.materials.feature.test.inditex.shared.enums.SortDirection;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.when;
 class GetAssetsByFilterUseCaseImplTest {
 
     @Mock
-    private AssetRepository assetRepository;
+    private AssetRepositoryPort assetRepositoryPort;
 
     @InjectMocks
     private GetAssetsByFilterUseCaseImpl getAssetsByFilterUseCaseImpl;
@@ -49,7 +50,7 @@ class GetAssetsByFilterUseCaseImplTest {
                 .uploadDate(now.minusHours(1))
                 .build();
 
-        when(assetRepository.findByFilters(
+        when(assetRepositoryPort.findByFilters(
                 anyString(),
                 anyString(),
                 any(LocalDateTime.class),
@@ -75,12 +76,12 @@ class GetAssetsByFilterUseCaseImplTest {
                 SortDirection.DESC
         );
 
-        when(assetRepository.findByFilters(any(), any(), any(), any(), any()))
+        when(assetRepositoryPort.findByFilters(any(), any(), any(), any(), any()))
                 .thenReturn(Flux.empty());
 
         getAssetsByFilterUseCaseImpl.find(command).blockLast();
 
-        verify(assetRepository).findByFilters(
+        verify(assetRepositoryPort).findByFilters(
                 "test.png",
                 "image/png",
                 startDate,
@@ -100,7 +101,7 @@ class GetAssetsByFilterUseCaseImplTest {
 
         Asset asset = Asset.builder().filename("any.png").build();
 
-        when(assetRepository.findByFilters(
+        when(assetRepositoryPort.findByFilters(
                 any(),
                 any(),
                 any(),
@@ -123,7 +124,7 @@ class GetAssetsByFilterUseCaseImplTest {
                 SortDirection.ASC
         );
 
-        when(assetRepository.findByFilters(any(), any(), any(), any(), any()))
+        when(assetRepositoryPort.findByFilters(any(), any(), any(), any(), any()))
                 .thenReturn(Flux.empty());
 
         StepVerifier.create(getAssetsByFilterUseCaseImpl.find(command))

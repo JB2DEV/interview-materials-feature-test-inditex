@@ -2,7 +2,7 @@ package com.interview.materials.feature.test.inditex.infraestructure.rest;
 
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
-import com.interview.materials.feature.test.inditex.infraestructure.repos.impl.AssetRepositoryImpl;
+import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.AssetRepositoryAdapter;
 import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,7 @@ class AssetGetControllerIT {
     private WebTestClient webTestClient;
 
     @Autowired
-    private AssetRepositoryImpl assetRepository;
+    private AssetRepositoryAdapter assetRepositoryAdapter;
 
     @Autowired
     private AssetEntityRepositoryR2dbc assetEntityRepositoryR2dbc;
@@ -71,10 +71,10 @@ class AssetGetControllerIT {
         LocalDateTime lastWeek = now.minusWeeks(1);
 
         return Flux.merge(
-                assetRepository.save(createAsset("document.pdf", "application/pdf", yesterday)),
-                assetRepository.save(createAsset("image.png", "image/png", now)),
-                assetRepository.save(createAsset("report.pdf", "application/pdf", lastWeek)),
-                assetRepository.save(createAsset("profile.jpg", "image/jpeg", yesterday.minusHours(2)))
+                assetRepositoryAdapter.save(createAsset("document.pdf", "application/pdf", yesterday)),
+                assetRepositoryAdapter.save(createAsset("image.png", "image/png", now)),
+                assetRepositoryAdapter.save(createAsset("report.pdf", "application/pdf", lastWeek)),
+                assetRepositoryAdapter.save(createAsset("profile.jpg", "image/jpeg", yesterday.minusHours(2)))
         );
     }
 

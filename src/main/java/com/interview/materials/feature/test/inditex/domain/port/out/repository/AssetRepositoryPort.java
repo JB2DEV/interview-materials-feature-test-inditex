@@ -1,4 +1,4 @@
-package com.interview.materials.feature.test.inditex.domain.repository;
+package com.interview.materials.feature.test.inditex.domain.port.out.repository;
 
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import reactor.core.publisher.Flux;
@@ -6,10 +6,8 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-public interface AssetRepository {
-
+public interface AssetRepositoryPort {
     Mono<Asset> save(Asset asset);
-
     Flux<Asset> findByFilters(
             String filename,
             String fileType,

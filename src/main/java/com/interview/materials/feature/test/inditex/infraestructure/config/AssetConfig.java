@@ -1,17 +1,17 @@
 package com.interview.materials.feature.test.inditex.infraestructure.config;
 
+import com.interview.materials.feature.test.inditex.application.adapter.in.service.UploadAssetServiceAdapter;
+import com.interview.materials.feature.test.inditex.application.adapter.in.usecase.UploadAssetAdapter;
+import com.interview.materials.feature.test.inditex.application.port.in.service.UploadAssetServicePort;
 import com.interview.materials.feature.test.inditex.application.service.GetAssetsServiceImpl;
-import com.interview.materials.feature.test.inditex.application.service.UploadAssetServiceImpl;
 import com.interview.materials.feature.test.inditex.application.usecase.GetAssetsByFilterUseCaseImpl;
-import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCaseImpl;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
-import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
+import com.interview.materials.feature.test.inditex.domain.port.in.usecase.UploadAssetUseCase;
+import com.interview.materials.feature.test.inditex.domain.port.out.repository.AssetRepositoryPort;
 import com.interview.materials.feature.test.inditex.domain.service.GetAssetsService;
-import com.interview.materials.feature.test.inditex.domain.service.UploadAssetService;
 import com.interview.materials.feature.test.inditex.domain.usecase.GetAssetsByFilterUseCase;
-import com.interview.materials.feature.test.inditex.domain.usecase.UploadAssetUseCase;
+import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.AssetRepositoryAdapter;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
-import com.interview.materials.feature.test.inditex.infraestructure.repos.impl.AssetRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,14 +25,28 @@ public class AssetConfig {
     private final AssetValidator assetValidator;
     private final AssetMapper assetMapper;
 
+    //TODO Eliminar toda config de infra, ya que es implementación propia. Lo demás dejarlo con beans
     @Bean
-    public AssetRepository assetRepositoryR2dbc() {
-        return new AssetRepositoryImpl(r2dbcEntityTemplate,assetMapper);
+    public AssetRepositoryPort assetRepositoryPort() {
+        return new AssetRepositoryAdapter(r2dbcEntityTemplate, assetMapper);
     }
 
     @Bean
-    public UploadAssetService uploadAssetService() {
-        return new UploadAssetServiceImpl(uploadAssetUseCase(), assetValidator, assetMapper);
+    public UploadAssetUseCase uploadAssetUseCase(AssetRepositoryPort assetRepositoryPort) {
+        return new UploadAssetAdapter(assetRepositoryPort);
+    }
+
+    @Bean
+    public UploadAssetServicePort uploadAssetServicePort(
+            UploadAssetUseCase    uploadAssetUseCase,
+            AssetValidator        assetValidator,
+            AssetMapper           assetMapper
+    ) {
+        return new UploadAssetServiceAdapter(
+                uploadAssetUseCase,
+                assetValidator,
+                assetMapper
+        );
     }
 
     @Bean
@@ -41,12 +55,7 @@ public class AssetConfig {
     }
 
     @Bean
-    public UploadAssetUseCase uploadAssetUseCase() {
-        return new UploadAssetUseCaseImpl(assetRepositoryR2dbc());
-    }
-
-    @Bean
     public GetAssetsByFilterUseCase getAssetsByFilterUseCase() {
-        return new GetAssetsByFilterUseCaseImpl(assetRepositoryR2dbc());
+        return new GetAssetsByFilterUseCaseImpl(assetRepositoryPort());
     }
 }

@@ -1,7 +1,7 @@
 package com.interview.materials.feature.test.inditex.infraestructure.mapper;
 
-import com.interview.materials.feature.test.inditex.application.usecase.FindAssetsByFiltersCommand;
-import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetCommand;
+import com.interview.materials.feature.test.inditex.application.command.FindAssetsByFiltersCommand;
+import com.interview.materials.feature.test.inditex.application.command.UploadAssetCommand;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import com.interview.materials.feature.test.inditex.infraestructure.db.entity.AssetEntity;
@@ -9,6 +9,7 @@ import com.interview.materials.feature.test.inditex.infraestructure.web.dto.Asse
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFilterRequest;
 import com.interview.materials.feature.test.inditex.shared.enums.SortDirection;
+import com.interview.materials.feature.test.inditex.shared.utils.Base64Utils;
 import com.interview.materials.feature.test.inditex.shared.utils.DateParser;
 import org.springframework.stereotype.Component;
 
@@ -45,13 +46,11 @@ public class AssetMapper {
 
     // DTO to Command
     public UploadAssetCommand toCommand(AssetFileUploadRequest dto) {
-        long size = Base64.getDecoder().decode(dto.encodedFile()).length;
-
         return UploadAssetCommand.builder()
                 .filename(dto.filename())
                 .contentType(dto.contentType())
                 .encodedFile(dto.encodedFile())
-                .size(size)
+                .size(Base64Utils.decodedLength(dto.encodedFile()))
                 .build();
     }
 

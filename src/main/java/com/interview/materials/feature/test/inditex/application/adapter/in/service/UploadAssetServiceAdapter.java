@@ -1,23 +1,21 @@
-package com.interview.materials.feature.test.inditex.application.service;
+package com.interview.materials.feature.test.inditex.application.adapter.in.service;
 
-import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetCommand;
+import com.interview.materials.feature.test.inditex.application.port.in.service.UploadAssetServicePort;
+import com.interview.materials.feature.test.inditex.application.command.UploadAssetCommand;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
-import com.interview.materials.feature.test.inditex.domain.service.UploadAssetService;
-import com.interview.materials.feature.test.inditex.domain.usecase.UploadAssetUseCase;
+import com.interview.materials.feature.test.inditex.domain.port.in.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-@Service
 @RequiredArgsConstructor
 @Slf4j
-public class UploadAssetServiceImpl implements UploadAssetService {
+public class UploadAssetServiceAdapter implements UploadAssetServicePort {
 
     private final UploadAssetUseCase uploadAssetUseCase;
     private final AssetValidator assetValidator;

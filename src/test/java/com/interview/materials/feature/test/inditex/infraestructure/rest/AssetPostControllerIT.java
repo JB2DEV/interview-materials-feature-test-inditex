@@ -1,6 +1,6 @@
 package com.interview.materials.feature.test.inditex.infraestructure.rest;
 
-import com.interview.materials.feature.test.inditex.infraestructure.repos.impl.AssetRepositoryImpl;
+import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.AssetRepositoryAdapter;
 import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
@@ -51,7 +51,7 @@ class AssetPostControllerIT {
     private WebTestClient webTestClient;
 
     @Autowired
-    private AssetRepositoryImpl assetRepository;
+    private AssetRepositoryAdapter assetRepositoryAdapter;
 
     @Autowired
     private AssetEntityRepositoryR2dbc assetEntityRepositoryR2dbc;

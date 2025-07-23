@@ -1,4 +1,4 @@
-package com.interview.materials.feature.test.inditex.application.usecase;
+package com.interview.materials.feature.test.inditex.application.command;
 
 import com.interview.materials.feature.test.inditex.shared.enums.SortDirection;
 import lombok.Builder;

@@ -1,14 +1,15 @@
-package com.interview.materials.feature.test.inditex.infraestructure.repos.impl;
+package com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository;
 
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
-import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
+import com.interview.materials.feature.test.inditex.domain.port.out.repository.AssetRepositoryPort;
 import com.interview.materials.feature.test.inditex.infraestructure.db.entity.AssetEntity;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
-import com.interview.materials.feature.test.inditex.infraestructure.repos.impl.query.AssetQueryBuilder;
+import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.query.AssetQueryBuilder;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -16,9 +17,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 
+@Component
 @RequiredArgsConstructor
 @Slf4j
-public class AssetRepositoryImpl implements AssetRepository {
+public class AssetRepositoryAdapter implements AssetRepositoryPort {
 
     private final R2dbcEntityTemplate template;
     private final AssetMapper assetMapper;

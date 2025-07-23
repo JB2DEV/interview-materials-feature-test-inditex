@@ -1,8 +1,9 @@
 package com.interview.materials.feature.test.inditex.application.usecase;
 
+import com.interview.materials.feature.test.inditex.application.adapter.in.usecase.UploadAssetAdapter;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
-import com.interview.materials.feature.test.inditex.domain.repository.AssetRepository;
+import com.interview.materials.feature.test.inditex.domain.port.out.repository.AssetRepositoryPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,20 +22,20 @@ import static org.mockito.Mockito.*;
 class UploadAssetUseCaseImplTest {
 
     @Mock
-    private AssetRepository assetRepository;
+    private AssetRepositoryPort assetRepositoryPort;
 
     @InjectMocks
-    private UploadAssetUseCaseImpl uploadAssetUseCaseImpl;
+    private UploadAssetAdapter uploadAssetAdapter;
 
     @Test
     void upload_shouldReturnSavedAsset_whenRepositorySucceeds() {
         Asset inputAsset = createTestAsset(null);
         Asset savedAsset = createTestAsset(UUID.randomUUID());
 
-        when(assetRepository.save(any(Asset.class)))
+        when(assetRepositoryPort.save(any(Asset.class)))
                 .thenReturn(Mono.just(savedAsset));
 
-        StepVerifier.create(uploadAssetUseCaseImpl.upload(inputAsset))
+        StepVerifier.create(uploadAssetAdapter.upload(inputAsset))
                 .expectNextMatches(asset ->
                         asset.getId() != null &&
                                 asset.getFilename().equals("test-file.png") &&
@@ -47,12 +48,12 @@ class UploadAssetUseCaseImplTest {
         Asset inputAsset = createTestAsset(null);
         Asset savedAsset = createTestAsset(UUID.randomUUID());
 
-        when(assetRepository.save(any(Asset.class)))
+        when(assetRepositoryPort.save(any(Asset.class)))
                 .thenReturn(Mono.just(savedAsset));
 
-        uploadAssetUseCaseImpl.upload(inputAsset).block();
+        uploadAssetAdapter.upload(inputAsset).block();
 
-        verify(assetRepository, times(1)).save(inputAsset);
+        verify(assetRepositoryPort, times(1)).save(inputAsset);
     }
 
     private Asset createTestAsset(UUID id) {

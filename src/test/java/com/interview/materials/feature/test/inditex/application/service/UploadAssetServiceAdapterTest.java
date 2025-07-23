@@ -1,12 +1,13 @@
 package com.interview.materials.feature.test.inditex.application.service;
 
-import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetCommand;
+import com.interview.materials.feature.test.inditex.application.adapter.in.service.UploadAssetServiceAdapter;
+import com.interview.materials.feature.test.inditex.application.command.UploadAssetCommand;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
-import com.interview.materials.feature.test.inditex.domain.usecase.UploadAssetUseCase;
+import com.interview.materials.feature.test.inditex.domain.port.in.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
@@ -26,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UploadAssetServiceImplTest {
+class UploadAssetServiceAdapterTest {
 
     @Mock
     private UploadAssetUseCase uploadAssetUseCase;
@@ -38,7 +39,7 @@ class UploadAssetServiceImplTest {
     private AssetMapper assetMapper;
 
     @InjectMocks
-    private UploadAssetServiceImpl uploadAssetServiceImpl;
+    private UploadAssetServiceAdapter uploadAssetServiceImpl;
 
     @Test
     void shouldUploadAssetSuccessfully() {

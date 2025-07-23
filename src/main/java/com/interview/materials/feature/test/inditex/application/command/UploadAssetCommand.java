@@ -1,4 +1,4 @@
-package com.interview.materials.feature.test.inditex.application.usecase;
+package com.interview.materials.feature.test.inditex.application.command;
 
 import lombok.Builder;
 import lombok.Getter;

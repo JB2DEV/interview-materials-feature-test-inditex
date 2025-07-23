@@ -2,6 +2,7 @@ package com.interview.materials.feature.test.inditex.infraestructure.repos.impl;
 
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
+import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.AssetRepositoryAdapter;
 import com.interview.materials.feature.test.inditex.infraestructure.db.entity.AssetEntity;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +50,7 @@ class AssetRepositoryImplIT {
     }
 
     @Autowired
-    private AssetRepositoryImpl assetRepository;
+    private AssetRepositoryAdapter assetRepositoryAdapter;
 
     @Autowired
     private R2dbcEntityTemplate template;
@@ -100,7 +101,7 @@ class AssetRepositoryImplIT {
                 .uploadDate(now)
                 .build();
 
-        Mono<Asset> savedAsset = assetRepository.save(newAsset);
+        Mono<Asset> savedAsset = assetRepositoryAdapter.save(newAsset);
 
         StepVerifier.create(savedAsset)
                 .assertNext(asset -> {
@@ -118,7 +119,7 @@ class AssetRepositoryImplIT {
 
     @Test
     void findByFilters_withoutFilters_shouldReturnAllAssets() {
-        Flux<Asset> assets = assetRepository.findByFilters(null, null, null, null, null);
+        Flux<Asset> assets = assetRepositoryAdapter.findByFilters(null, null, null, null, null);
 
         StepVerifier.create(assets.collectList())
                 .assertNext(list -> {
@@ -131,7 +132,7 @@ class AssetRepositoryImplIT {
 
     @Test
     void findByFilters_withFilenameFilter_shouldReturnMatchingAssets() {
-        Flux<Asset> assets = assetRepository.findByFilters("image.png", null, null, null, null);
+        Flux<Asset> assets = assetRepositoryAdapter.findByFilters("image.png", null, null, null, null);
 
         StepVerifier.create(assets.collectList())
                 .assertNext(list -> {
@@ -144,7 +145,7 @@ class AssetRepositoryImplIT {
 
     @Test
     void findByFilters_withContentTypeFilter_shouldReturnMatchingAssets() {
-        Flux<Asset> assets = assetRepository.findByFilters(null, "application/pdf", null, null, null);
+        Flux<Asset> assets = assetRepositoryAdapter.findByFilters(null, "application/pdf", null, null, null);
 
         StepVerifier.create(assets.collectList())
                 .assertNext(list -> {
@@ -157,7 +158,7 @@ class AssetRepositoryImplIT {
 
     @Test
     void findByFilters_withDateRangeFilter_shouldReturnAssetsInRange() {
-        Flux<Asset> assets = assetRepository.findByFilters(
+        Flux<Asset> assets = assetRepositoryAdapter.findByFilters(
                 null,
                 null,
                 now.minusDays(1),
@@ -175,7 +176,7 @@ class AssetRepositoryImplIT {
 
     @Test
     void findByFilters_withSortDirection_shouldReturnSortedAssets() {
-        Flux<Asset> assets = assetRepository.findByFilters(null, null, null, null, "DESC");
+        Flux<Asset> assets = assetRepositoryAdapter.findByFilters(null, null, null, null, "DESC");
 
         StepVerifier.create(assets.collectList())
                 .assertNext(list -> {
@@ -188,7 +189,7 @@ class AssetRepositoryImplIT {
 
     @Test
     void findByFilters_withAllFilters_shouldReturnCorrectResults() {
-        Flux<Asset> assets = assetRepository.findByFilters(
+        Flux<Asset> assets = assetRepositoryAdapter.findByFilters(
                 "%.pdf",
                 "application/pdf",
                 lastWeek.minusDays(1),

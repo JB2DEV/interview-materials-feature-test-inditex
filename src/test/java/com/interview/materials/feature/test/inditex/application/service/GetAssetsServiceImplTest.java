@@ -1,6 +1,6 @@
 package com.interview.materials.feature.test.inditex.application.service;
 
-import com.interview.materials.feature.test.inditex.application.usecase.FindAssetsByFiltersCommand;
+import com.interview.materials.feature.test.inditex.application.command.FindAssetsByFiltersCommand;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidDateRangeException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;
