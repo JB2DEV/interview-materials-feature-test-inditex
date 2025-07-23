@@ -9,7 +9,7 @@ info:
 tags:
   - name: asset
 paths:
-  /api/mgmt/1/assets/actions/upload:
+  /api/mgmt/2/assets/actions/upload:
     post:
       tags:
         - asset
@@ -87,7 +87,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /api/mgmt/1/assets/:
+  /api/mgmt/2/assets/:
     get: 
       tags:
         - asset
