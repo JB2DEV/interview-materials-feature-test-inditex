@@ -1,6 +1,5 @@
 package com.interview.materials.feature.test.inditex.application.usecase;
 
-import com.interview.materials.feature.test.inditex.application.adapter.in.usecase.UploadAssetAdapter;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import com.interview.materials.feature.test.inditex.domain.port.out.repository.AssetRepositoryPort;
@@ -19,13 +18,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UploadAssetUseCaseImplTest {
+class UploadAssetUseCaseTest {
 
     @Mock
     private AssetRepositoryPort assetRepositoryPort;
 
     @InjectMocks
-    private UploadAssetAdapter uploadAssetAdapter;
+    private UploadAssetUseCase uploadAssetUseCase;
 
     @Test
     void upload_shouldReturnSavedAsset_whenRepositorySucceeds() {
@@ -35,7 +34,7 @@ class UploadAssetUseCaseImplTest {
         when(assetRepositoryPort.save(any(Asset.class)))
                 .thenReturn(Mono.just(savedAsset));
 
-        StepVerifier.create(uploadAssetAdapter.upload(inputAsset))
+        StepVerifier.create(uploadAssetUseCase.upload(inputAsset))
                 .expectNextMatches(asset ->
                         asset.getId() != null &&
                                 asset.getFilename().equals("test-file.png") &&
@@ -51,7 +50,7 @@ class UploadAssetUseCaseImplTest {
         when(assetRepositoryPort.save(any(Asset.class)))
                 .thenReturn(Mono.just(savedAsset));
 
-        uploadAssetAdapter.upload(inputAsset).block();
+        uploadAssetUseCase.upload(inputAsset).block();
 
         verify(assetRepositoryPort, times(1)).save(inputAsset);
     }

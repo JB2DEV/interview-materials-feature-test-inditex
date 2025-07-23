@@ -1,12 +1,12 @@
 package com.interview.materials.feature.test.inditex.infraestructure.config;
 
-import com.interview.materials.feature.test.inditex.application.adapter.in.service.UploadAssetServiceAdapter;
-import com.interview.materials.feature.test.inditex.application.adapter.in.usecase.UploadAssetAdapter;
+import com.interview.materials.feature.test.inditex.application.usecase.UploadAssetUseCase;
+import com.interview.materials.feature.test.inditex.domain.port.in.usecase.UploadAssetUseCasePort;
+import com.interview.materials.feature.test.inditex.infraestructure.adapter.in.service.UploadAssetServiceAdapter;
 import com.interview.materials.feature.test.inditex.application.port.in.service.UploadAssetServicePort;
 import com.interview.materials.feature.test.inditex.application.service.GetAssetsServiceImpl;
 import com.interview.materials.feature.test.inditex.application.usecase.GetAssetsByFilterUseCaseImpl;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
-import com.interview.materials.feature.test.inditex.domain.port.in.usecase.UploadAssetUseCase;
 import com.interview.materials.feature.test.inditex.domain.port.out.repository.AssetRepositoryPort;
 import com.interview.materials.feature.test.inditex.domain.service.GetAssetsService;
 import com.interview.materials.feature.test.inditex.domain.usecase.GetAssetsByFilterUseCase;
@@ -32,18 +32,18 @@ public class AssetConfig {
     }
 
     @Bean
-    public UploadAssetUseCase uploadAssetUseCase(AssetRepositoryPort assetRepositoryPort) {
-        return new UploadAssetAdapter(assetRepositoryPort);
+    public UploadAssetUseCasePort uploadAssetUseCase(AssetRepositoryPort assetRepositoryPort) {
+        return new UploadAssetUseCase(assetRepositoryPort);
     }
 
     @Bean
     public UploadAssetServicePort uploadAssetServicePort(
-            UploadAssetUseCase    uploadAssetUseCase,
+            UploadAssetUseCasePort uploadAssetUseCasePort,
             AssetValidator        assetValidator,
             AssetMapper           assetMapper
     ) {
         return new UploadAssetServiceAdapter(
-                uploadAssetUseCase,
+                uploadAssetUseCasePort,
                 assetValidator,
                 assetMapper
         );

@@ -1,4 +1,4 @@
-package com.interview.materials.feature.test.inditex.infraestructure.rest;
+package com.interview.materials.feature.test.inditex.infraestructure.adapter.in.rest;
 
 import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.AssetRepositoryAdapter;
 import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-class AssetPostControllerIT {
+class AssetPostRestControllerAdapterIT {
 
     @Container
     @ServiceConnection
@@ -147,8 +147,8 @@ class AssetPostControllerIT {
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody()
-                .jsonPath("$.message").value(message ->
-                        assertThat(message).asString().contains("not valid base64"));
+                .jsonPath("$.invalidParams[0].message").value(message ->
+                        assertThat(message).asString().contains("Invalid base64 encoding"));
     }
 
     @Test

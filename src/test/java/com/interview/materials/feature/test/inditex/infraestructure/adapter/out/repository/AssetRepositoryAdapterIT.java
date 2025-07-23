@@ -1,8 +1,7 @@
-package com.interview.materials.feature.test.inditex.infraestructure.repos.impl;
+package com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository;
 
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
-import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.AssetRepositoryAdapter;
 import com.interview.materials.feature.test.inditex.infraestructure.db.entity.AssetEntity;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Testcontainers
-class AssetRepositoryImplIT {
+class AssetRepositoryAdapterIT {
 
     @Container
     @ServiceConnection

@@ -1,5 +1,7 @@
 package com.interview.materials.feature.test.inditex.shared.utils;
 
+import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
+
 import java.util.Base64;
 
 public final class Base64Utils {
@@ -13,7 +15,7 @@ public final class Base64Utils {
             Base64.getDecoder().decode(input);
             return true;
         } catch (IllegalArgumentException e) {
-            return false;
+            throw new InvalidBase64EncodedAssetException("Invalid base64 encoding");
         }
     }
 

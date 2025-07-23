@@ -2,6 +2,7 @@ package com.interview.materials.feature.test.inditex.infraestructure.mapper;
 
 import com.interview.materials.feature.test.inditex.application.command.FindAssetsByFiltersCommand;
 import com.interview.materials.feature.test.inditex.application.command.UploadAssetCommand;
+import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import com.interview.materials.feature.test.inditex.infraestructure.db.entity.AssetEntity;
@@ -14,7 +15,6 @@ import com.interview.materials.feature.test.inditex.shared.utils.DateParser;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.UUID;
 
 @Component
@@ -53,7 +53,6 @@ public class AssetMapper {
                 .size(Base64Utils.decodedLength(dto.encodedFile()))
                 .build();
     }
-
     // DTO to Command
     public FindAssetsByFiltersCommand toCommand(AssetFilterRequest request) {
         return FindAssetsByFiltersCommand.builder()
