@@ -2,14 +2,11 @@ package com.interview.materials.feature.test.inditex.infraestructure.adapter.in.
 
 import com.interview.materials.feature.test.inditex.application.command.UploadAssetCommand;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
-import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import com.interview.materials.feature.test.inditex.domain.port.in.usecase.UploadAssetUseCasePort;
 import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
-import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
-import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +20,8 @@ import java.util.Base64;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UploadAssetServiceAdapterTest {
@@ -60,7 +58,7 @@ class UploadAssetServiceAdapterTest {
                 .uploadDate(LocalDateTime.now())
                 .build();
 
-        when(assetValidator.validateEncodedFile(anyString())).thenReturn(Mono.empty());
+        //when(assetValidator.validateEncodedFile(anyString())).thenReturn(Mono.empty());
         when(assetValidator.validateContentType(anyString())).thenReturn(Mono.empty());
         when(uploadAssetUseCasePort.upload(any(Asset.class))).thenReturn(Mono.just(domainAsset));
         when(assetMapper.toDomain(command, expectedUrl)).thenReturn(domainAsset);
@@ -75,26 +73,26 @@ class UploadAssetServiceAdapterTest {
                 .verifyComplete();
     }
 
-    @Test
-    void shouldFailWhenBase64IsInvalid() {
-        UploadAssetCommand command = UploadAssetCommand.builder()
-                .filename("file.jpg")
-                .contentType("image/png")
-                .encodedFile("not_base64!!")
-                .build();
-
-        when(assetValidator.validateEncodedFile("not_base64!!"))
-                .thenReturn(Mono.error(new InvalidBase64EncodedAssetException("Invalid base64")));
-
-        Mono<Asset> result = uploadAssetServiceImpl.handle(command);
-
-        StepVerifier.create(result)
-                .expectErrorMatches(ex ->
-                        ex instanceof InvalidBase64EncodedAssetException &&
-                                ex.getMessage().contains("Invalid base64")
-                )
-                .verify();
-    }
+    //@Test
+    //void shouldFailWhenBase64IsInvalid() {
+    //    UploadAssetCommand command = UploadAssetCommand.builder()
+    //            .filename("file.jpg")
+    //            .contentType("image/png")
+    //            .encodedFile("not_base64!!")
+    //            .build();
+//
+    //    when(assetValidator.validateEncodedFile("not_base64!!"))
+    //            .thenReturn(Mono.error(new InvalidBase64EncodedAssetException("Invalid base64")));
+//
+    //    Mono<Asset> result = uploadAssetServiceImpl.handle(command);
+//
+    //    StepVerifier.create(result)
+    //            .expectErrorMatches(ex ->
+    //                    ex instanceof InvalidBase64EncodedAssetException &&
+    //                            ex.getMessage().contains("Invalid base64")
+    //            )
+    //            .verify();
+    //}
 
     @Test
     void shouldFailWhenContentTypeIsInvalid() {
@@ -104,7 +102,7 @@ class UploadAssetServiceAdapterTest {
                 .encodedFile("VGhpcyBpcyBhIGZha2UgZW5jb2RlZCBmaWxlIGJvZHk=")
                 .build();
 
-        when(assetValidator.validateEncodedFile(anyString())).thenReturn(Mono.empty());
+        //when(assetValidator.validateEncodedFile(anyString())).thenReturn(Mono.empty());
         when(assetValidator.validateContentType("other/png"))
                 .thenReturn(Mono.error(
                         new UnsupportedAssetContentTypeException("Unsupported type: other")

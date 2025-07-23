@@ -1,7 +1,7 @@
 package com.interview.materials.feature.test.inditex.infraestructure.adapter.in.rest;
 
 import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.AssetRepositoryAdapter;
-import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
+import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.r2dbc.AssetEntityRepositoryR2dbc;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
 import org.junit.jupiter.api.BeforeEach;

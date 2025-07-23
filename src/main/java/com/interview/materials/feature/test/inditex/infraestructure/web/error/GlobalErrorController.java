@@ -1,6 +1,5 @@
 package com.interview.materials.feature.test.inditex.infraestructure.web.error;
 
-import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidDateRangeException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
@@ -32,7 +31,6 @@ public class GlobalErrorController {
     }
 
     @ExceptionHandler({
-            InvalidBase64EncodedAssetException.class,
             UnsupportedAssetContentTypeException.class,
             InvalidDateRangeException.class,
             InvalidSortDirectionException.class

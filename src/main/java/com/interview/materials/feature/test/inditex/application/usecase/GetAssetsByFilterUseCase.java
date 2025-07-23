@@ -2,13 +2,13 @@ package com.interview.materials.feature.test.inditex.application.usecase;
 
 import com.interview.materials.feature.test.inditex.application.command.FindAssetsByFiltersCommand;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
+import com.interview.materials.feature.test.inditex.domain.port.in.usecase.GetAssetsByFilterUseCasePort;
 import com.interview.materials.feature.test.inditex.domain.port.out.repository.AssetRepositoryPort;
-import com.interview.materials.feature.test.inditex.domain.usecase.GetAssetsByFilterUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 
 @RequiredArgsConstructor
-public class GetAssetsByFilterUseCaseImpl implements GetAssetsByFilterUseCase {
+public class GetAssetsByFilterUseCase implements GetAssetsByFilterUseCasePort {
 
     private final AssetRepositoryPort assetRepository;
 

@@ -1,7 +1,7 @@
 package com.interview.materials.feature.test.inditex.infraestructure.adapter.in.service;
 
-import com.interview.materials.feature.test.inditex.application.port.in.service.UploadAssetServicePort;
 import com.interview.materials.feature.test.inditex.application.command.UploadAssetCommand;
+import com.interview.materials.feature.test.inditex.application.port.in.service.UploadAssetServicePort;
 import com.interview.materials.feature.test.inditex.application.validation.AssetValidator;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.port.in.usecase.UploadAssetUseCasePort;
@@ -9,10 +9,12 @@ import com.interview.materials.feature.test.inditex.infraestructure.mapper.Asset
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Slf4j
+@Service
 public class UploadAssetServiceAdapter implements UploadAssetServicePort {
 
     private final UploadAssetUseCasePort uploadAssetUseCasePort;
@@ -21,7 +23,6 @@ public class UploadAssetServiceAdapter implements UploadAssetServicePort {
 
     public Mono<Asset> handle(UploadAssetCommand command) {
         return Mono.when(
-                        assetValidator.validateEncodedFile(command.encodedFile()),
                         assetValidator.validateContentType(command.contentType())
                 )
                 .then(Mono.defer(() -> {

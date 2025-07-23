@@ -1,9 +1,9 @@
-package com.interview.materials.feature.test.inditex.infraestructure.rest;
+package com.interview.materials.feature.test.inditex.infraestructure.adapter.in.rest;
 
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.AssetRepositoryAdapter;
-import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
+import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.r2dbc.AssetEntityRepositoryR2dbc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-class AssetGetControllerIT {
+class AssetGetRestControllerAdapterIT {
 
     @Container
     @ServiceConnection
@@ -169,6 +169,24 @@ class AssetGetControllerIT {
                 .expectBody()
                 .jsonPath("$.message").value(message ->
                         assertThat(message).asString().contains("Invalid sort direction"));
+    }
+
+    @Test
+    void getAssets_WithInvalidDateRange_ReturnsBadRequest() {
+        String start = LocalDateTime.now().plusDays(1).format(dateFormatter);
+        String end = LocalDateTime.now().minusDays(1).format(dateFormatter);
+
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder.path("/api/mgmt/1/assets")
+                        .queryParam("uploadDateStart", start)
+                        .queryParam("uploadDateEnd", end)
+                        .build())
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$.message").value(message ->
+                        assertThat(message).asString().contains("Start date must be before or equal to end date.")
+                );
     }
 
     @Test

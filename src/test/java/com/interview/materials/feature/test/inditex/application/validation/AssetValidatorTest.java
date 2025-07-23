@@ -1,6 +1,5 @@
 package com.interview.materials.feature.test.inditex.application.validation;
 
-import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidDateRangeException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
@@ -17,23 +16,6 @@ class AssetValidatorTest {
 
     @InjectMocks
     private AssetValidator assetValidator;
-
-    @Test
-    void validateEncodedFile_withValidBase64_shouldNotThrowException() {
-        String validBase64 = "dGVzdCBkYXRh";
-
-        StepVerifier.create(assetValidator.validateEncodedFile(validBase64))
-                .verifyComplete();
-    }
-
-    @Test
-    void validateEncodedFile_withInvalidBase64_shouldThrowInvalidBase64EncodedAssetException() {
-        String invalidBase64 = "not a valid base64 string!";
-
-        StepVerifier.create(assetValidator.validateEncodedFile(invalidBase64))
-                .expectError(InvalidBase64EncodedAssetException.class)
-                .verify();
-    }
 
     @Test
     void validateContentType_withSupportedTypeImage_shouldNotThrowException() {

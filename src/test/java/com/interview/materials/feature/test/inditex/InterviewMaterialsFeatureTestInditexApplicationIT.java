@@ -1,6 +1,6 @@
 package com.interview.materials.feature.test.inditex;
 
-import com.interview.materials.feature.test.inditex.infraestructure.repos.r2dbc.AssetEntityRepositoryR2dbc;
+import com.interview.materials.feature.test.inditex.infraestructure.adapter.out.repository.r2dbc.AssetEntityRepositoryR2dbc;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

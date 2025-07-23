@@ -2,7 +2,6 @@ package com.interview.materials.feature.test.inditex.infraestructure.mapper;
 
 import com.interview.materials.feature.test.inditex.application.command.FindAssetsByFiltersCommand;
 import com.interview.materials.feature.test.inditex.application.command.UploadAssetCommand;
-import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
 import com.interview.materials.feature.test.inditex.domain.model.AssetId;
 import com.interview.materials.feature.test.inditex.infraestructure.db.entity.AssetEntity;

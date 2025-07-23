@@ -1,10 +1,8 @@
 package com.interview.materials.feature.test.inditex.application.validation;
 
-import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidDateRangeException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
-import com.interview.materials.feature.test.inditex.shared.utils.Base64Utils;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -17,14 +15,6 @@ import java.util.Objects;
 public class AssetValidator {
 
     private static final List<String> ALLOWED_SORT_DIRECTIONS = List.of("ASC", "DESC");
-
-    public Mono<Void> validateEncodedFile(String encodedFile) {
-        return Mono.fromRunnable(() -> {
-            if (!Base64Utils.isValidBase64(encodedFile)) {
-                throw new InvalidBase64EncodedAssetException("The encoded file is not valid base64.");
-            }
-        });
-    }
 
     public Mono<Void> validateContentType(String contentType) {
         return Mono.fromRunnable(() -> {

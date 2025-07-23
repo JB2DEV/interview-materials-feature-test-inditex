@@ -14,18 +14,19 @@ import reactor.test.StepVerifier;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GetAssetsByFilterUseCaseImplTest {
+class GetAssetsByFilterUseCaseTest {
 
     @Mock
     private AssetRepositoryPort assetRepositoryPort;
 
     @InjectMocks
-    private GetAssetsByFilterUseCaseImpl getAssetsByFilterUseCaseImpl;
+    private GetAssetsByFilterUseCase getAssetsByFilterUseCaseImpl;
 
     @Test
     void find_shouldReturnAssets_whenFiltersMatch() {

@@ -1,8 +1,9 @@
-package com.interview.materials.feature.test.inditex.infraestructure.web.rest;
+package com.interview.materials.feature.test.inditex.infraestructure.adapter.in.rest;
 
-import com.interview.materials.feature.test.inditex.application.service.GetAssetsServiceImpl;
+import com.interview.materials.feature.test.inditex.application.command.FindAssetsByFiltersCommand;
+import com.interview.materials.feature.test.inditex.application.port.in.service.GetAssetsServicePort;
 import com.interview.materials.feature.test.inditex.domain.model.Asset;
-import com.interview.materials.feature.test.inditex.domain.service.GetAssetsService;
+import com.interview.materials.feature.test.inditex.infraestructure.mapper.AssetMapper;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFilterRequest;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,10 @@ import reactor.core.publisher.Flux;
 @RequestMapping("/api/mgmt/1/assets")
 @RequiredArgsConstructor
 @Slf4j
-public class AssetGetController {
+public class AssetGetRestControllerAdapter {
 
-    private final GetAssetsService getAssetsService;
+    private final GetAssetsServicePort getAssetsServicePort;
+    private final AssetMapper assetMapper;
 
     @GetMapping
     public Flux<Asset> getAssetsByFilters(
@@ -32,8 +34,9 @@ public class AssetGetController {
         AssetFilterRequest request = new AssetFilterRequest(
                 filename, filetype, uploadDateStart, uploadDateEnd, sortDirection
         );
+        FindAssetsByFiltersCommand command = assetMapper.toCommand(request);
         return TraceIdHolder.getTraceId()
                 .doOnNext(traceId -> log.info("[traceId={}] Incoming request to GET /assets", traceId))
-                .thenMany(getAssetsService.find(request));
+                .thenMany(getAssetsServicePort.find(command));
     }
 }

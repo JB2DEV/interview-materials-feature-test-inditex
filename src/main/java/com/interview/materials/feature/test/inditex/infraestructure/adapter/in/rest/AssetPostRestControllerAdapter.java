@@ -6,7 +6,6 @@ import com.interview.materials.feature.test.inditex.infraestructure.mapper.Asset
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadRequest;
 import com.interview.materials.feature.test.inditex.infraestructure.web.dto.AssetFileUploadResponse;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
-import com.interview.materials.feature.test.inditex.shared.utils.Base64Utils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
