@@ -1,6 +1,5 @@
 package com.interview.materials.feature.test.inditex.application.validation;
 
-import com.interview.materials.feature.test.inditex.application.validation.error.InvalidBase64EncodedAssetException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidDateRangeException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -17,14 +15,6 @@ import java.util.Objects;
 public class AssetValidator {
 
     private static final List<String> ALLOWED_SORT_DIRECTIONS = List.of("ASC", "DESC");
-
-    public Mono<Void> validateEncodedFile(String encodedFile) {
-        return Mono.fromRunnable(() -> {
-            if (!isValidBase64(encodedFile)) {
-                throw new InvalidBase64EncodedAssetException("The encoded file is not valid base64.");
-            }
-        });
-    }
 
     public Mono<Void> validateContentType(String contentType) {
         return Mono.fromRunnable(() -> {
@@ -48,15 +38,6 @@ public class AssetValidator {
                 throw new InvalidDateRangeException("Start date must be before or equal to end date.");
             }
         });
-    }
-
-    private boolean isValidBase64(String input) {
-        try {
-            Base64.getDecoder().decode(input);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
     }
 
     private boolean isSupportedContentType(String contentType) {
