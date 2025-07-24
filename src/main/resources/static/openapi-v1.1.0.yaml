@@ -1,0 +1,195 @@
+openapi: 3.0.3
+info:
+  title: Asset Manager
+  description: |-
+    This API definition describes asset (pictures, videos) management operations.
+  contact:
+    email: javier.alca.2000@gmail.com
+  version: 1.1.0
+tags:
+  - name: asset
+paths:
+  /api/mgmt/1/assets/actions/upload:
+    post:
+      tags:
+        - asset
+      summary: Performs an upload of the requested asset file.
+      description: Performs an upload of the requested asset file.
+      operationId: uploadAssetFile
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssetFileUploadRequest'
+        required: true
+      responses:
+        '202':
+          description: The operation was accepted by the backend.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetFileUploadResponse'
+        '401':
+          description: You are not authenticated or your token is not valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: You do not have enough permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: An unexpected error occurred.
+  /api/mgmt/1/assets/:
+    get:
+      tags:
+        - asset
+      summary: Allows searching (& filtering) all the uploaded/registered assets.
+      description: Allows searching (& filtering) all the uploaded/registered assets.
+      operationId: getAssetsByFilter
+      parameters:
+        - $ref: '#/components/parameters/UploadDateStart'
+        - $ref: '#/components/parameters/UploadDateEnd'
+        - $ref: '#/components/parameters/Filename'
+        - $ref: '#/components/parameters/Filetype'
+        - $ref: '#/components/parameters/SortDirection'
+      responses:
+        '200':
+          description: Returns a list of assets matching the specified criteria.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asset'
+        '400':
+          description: Malformed request.
+        '500':
+          description: An unexpected error occurred.
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    UploadDateStart:
+      in: query
+      name: uploadDateStart
+      description: The start date for the range.
+      schema:
+        type: string
+    UploadDateEnd:
+      in: query
+      name: uploadDateEnd
+      description: The end date for the range.
+      schema:
+        type: string
+    Filename:
+      in: query
+      name: filename
+      description: The filename expression for file filtering (regex).
+      schema:
+        type: string
+    Filetype:
+      in: query
+      name: filetype
+      description: The file types for file filtering (one at a time).
+      schema:
+        type: string
+    SortDirection:
+      in: query
+      name: sortDirection
+      schema:
+        type: string
+        enum:
+          - ASC
+          - DESC
+  schemas:
+    Asset:
+      type: object
+      description: Represents an asset.
+      properties:
+        id:
+          type: string
+          description: Unique file identifier.
+        filename:
+          type: string
+          description: Name of the asset.
+        contentType:
+          type: string
+          description: The file type.
+        url:
+          type: string
+          description: The URL of the uploaded/published asset.
+        size:
+          type: integer
+          description: The actual file size.
+        uploadDate:
+          type: string
+          description: The date & time the file was uploaded.
+    AssetFileUploadRequest:
+      type: object
+      description: Represents a file upload request.
+      properties:
+        filename:
+          type: string
+          format: string
+          example: img.png
+          description: The filename associated to the asset being uploaded.
+        encodedFile:
+          type: string
+          format: byte
+          description: The actual file to be uploaded.
+        contentType:
+          type: string
+          description: The filetype according to the MIME type (IANA) definition.
+    AssetFileUploadResponse:
+      type: object
+      description: Represents a file upload response.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the requested file upload.
+    ErrorResponse:
+      type: object
+      description: Standard error response format
+      properties:
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        error:
+          type: string
+          description: HTTP status message
+          example: Bad Request
+        message:
+          type: string
+          description: Error message
+          example: Invalid sort direction
+        timestamp:
+          type: string
+          description: When the error occurred
+          example: "2025-07-22 10:00:00"
+        invalidParams:
+          type: array
+          description: List of field validation errors
+          items:
+            $ref: '#/components/schemas/FieldError'
+    FieldError:
+      type: object
+      description: Field validation error details
+      properties:
+        field:
+          type: string
+          description: Name of the invalid field
+          example: contentType
+        message:
+          type: string
+          description: Error message for the field
+          example: must be a valid MIME type

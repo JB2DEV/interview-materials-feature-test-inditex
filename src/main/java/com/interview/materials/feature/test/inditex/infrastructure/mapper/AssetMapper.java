@@ -10,7 +10,7 @@ import com.interview.materials.feature.test.inditex.infrastructure.web.dto.Asset
 import com.interview.materials.feature.test.inditex.infrastructure.web.dto.AssetFilterRequest;
 import com.interview.materials.feature.test.inditex.shared.enums.SortDirection;
 import com.interview.materials.feature.test.inditex.shared.utils.Base64Utils;
-import com.interview.materials.feature.test.inditex.shared.utils.DateParser;
+import com.interview.materials.feature.test.inditex.shared.utils.DateUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -57,8 +57,8 @@ public class AssetMapper {
         return FindAssetsByFiltersCommand.builder()
                 .filename(request.filename())
                 .contentType(request.filetype())
-                .uploadDateStart(DateParser.parse(request.uploadDateStart()))
-                .uploadDateEnd(DateParser.parse(request.uploadDateEnd()))
+                .uploadDateStart(DateUtils.parse(request.uploadDateStart()))
+                .uploadDateEnd(DateUtils.parse(request.uploadDateEnd()))
                 .sortDirection(SortDirection.from(request.sortDirection()))
                 .build();
     }

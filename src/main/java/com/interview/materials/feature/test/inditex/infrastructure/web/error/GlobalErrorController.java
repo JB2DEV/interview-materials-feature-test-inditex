@@ -2,8 +2,11 @@ package com.interview.materials.feature.test.inditex.infrastructure.web.error;
 
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidDateRangeException;
 import com.interview.materials.feature.test.inditex.application.validation.error.InvalidSortDirectionException;
+import com.interview.materials.feature.test.inditex.application.validation.error.MissingCredentialsException;
 import com.interview.materials.feature.test.inditex.application.validation.error.UnsupportedAssetContentTypeException;
+import com.interview.materials.feature.test.inditex.domain.exception.UnauthorizedUserException;
 import com.interview.materials.feature.test.inditex.shared.context.TraceIdHolder;
+import com.interview.materials.feature.test.inditex.shared.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +16,19 @@ import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.reactive.resource.NoResourceFoundException;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalErrorController {
+
+    @ExceptionHandler(UnauthorizedUserException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleUnauthorized(UnauthorizedUserException ex) {
+        return TraceIdHolder.getTraceId().flatMap(traceId -> {
+            log.warn("[traceId={}] Unauthorized access: {}", traceId, ex.getMessage());
+            return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        });
+    }
 
     @ExceptionHandler(NoResourceFoundException.class)
     public Mono<ResponseEntity<ErrorResponse>> handleNotFound(NoResourceFoundException ex) {
@@ -33,7 +41,8 @@ public class GlobalErrorController {
     @ExceptionHandler({
             UnsupportedAssetContentTypeException.class,
             InvalidDateRangeException.class,
-            InvalidSortDirectionException.class
+            InvalidSortDirectionException.class,
+            MissingCredentialsException.class
     })
     public Mono<ResponseEntity<ErrorResponse>> handleApplicationValidation(RuntimeException ex) {
         return TraceIdHolder.getTraceId().flatMap(traceId -> {
@@ -63,7 +72,7 @@ public class GlobalErrorController {
                         status.value(),
                         status.getReasonPhrase(),
                         message,
-                        nowFormatted(),
+                        DateUtils.nowFormatted(),
                         null
                 )
         ));
@@ -75,15 +84,9 @@ public class GlobalErrorController {
                         status.value(),
                         status.getReasonPhrase(),
                         message,
-                        nowFormatted(),
+                        DateUtils.nowFormatted(),
                         errors
                 )
         ));
-    }
-
-    private String nowFormatted() {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                .withZone(ZoneId.systemDefault())
-                .format(Instant.now());
     }
 }

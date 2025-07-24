@@ -6,6 +6,12 @@ spring:
     username: sa
     password:
 
+app:
+  security:
+    admin:
+      username: ${ADMIN_USERNAME:admin}
+      password: ${ADMIN_PASSWORD:admin123}
+
 management:
   endpoints:
     web:

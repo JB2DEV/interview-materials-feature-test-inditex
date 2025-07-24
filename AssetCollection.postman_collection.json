@@ -12,6 +12,95 @@
 				{
 					"name": "POST - Upload Asset (valid)",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"filename\": \"new-image.jpg\",\r\n  \"contentType\": \"image/jpg\",\r\n  \"encodedFile\": \"VGhpcyBpcyBhIGZha2UgZW5jb2RlZCBmaWxlIGJvZHk=\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets/actions/upload",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets",
+								"actions",
+								"upload"
+							]
+						},
+						"description": "Uploads a valid image asset with all fields."
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Upload Asset (invalid token)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{invalidToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"filename\": \"new-image.jpg\",\r\n  \"contentType\": \"image/jpg\",\r\n  \"encodedFile\": \"VGhpcyBpcyBhIGZha2UgZW5jb2RlZCBmaWxlIGJvZHk=\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/api/mgmt/{{apiVersion}}/assets/actions/upload",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"mgmt",
+								"{{apiVersion}}",
+								"assets",
+								"actions",
+								"upload"
+							]
+						},
+						"description": "Uploads a valid image asset with all fields."
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Upload Asset (without token)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -45,6 +134,16 @@
 				{
 					"name": "POST - Upload Asset (missing all fields)",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -78,6 +177,16 @@
 				{
 					"name": "POST - Upload Asset (missing filename)",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -111,6 +220,16 @@
 				{
 					"name": "POST - Upload Asset (missing contentType)",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -144,6 +263,16 @@
 				{
 					"name": "POST - Upload Asset (missing encodedFile)",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -177,6 +306,16 @@
 				{
 					"name": "POST - Upload Asset (invalid base64)",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -210,6 +349,16 @@
 				{
 					"name": "POST - Upload Asset (unsupported content type)",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -704,6 +853,110 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Security",
+			"item": [
+				{
+					"name": "POST - Login (valid)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    if (jsonData.token) {\r",
+									"        pm.collectionVariables.set(\"token\", jsonData.token);\r",
+									"        console.log(\"Token guardado en variable de colección:\", jsonData.token);\r",
+									"    } else {\r",
+									"        console.warn(\"La respuesta no contiene el campo 'token'.\");\r",
+									"    }\r",
+									"} else {\r",
+									"    console.error(`Se esperaba un 200, pero se recibió ${pm.response.code}`);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"admin123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/mgmt/1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"mgmt",
+								"1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Login (invalid)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"password\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/mgmt/1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"mgmt",
+								"1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -737,6 +990,15 @@
 		{
 			"key": "apiVersion",
 			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "invalidToken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30",
 			"type": "string"
 		}
 	]

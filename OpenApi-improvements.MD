@@ -293,5 +293,5 @@ components:
 - **Swagger**: The application uses **Swagger** to document the API endpoints. The OpenAPI specification is available in the `openapi.yml` file, which can be used to generate interactive API documentation.
 - **Contract First**: The OpenAPI specification is designed to be used as a contract-first approach, allowing developers to define the API structure before implementation. This ensures that the API meets the expected requirements and facilitates collaboration between frontend and backend teams.
 
-[`OpenApi Version 1.0.0`](./src/main/resources/static/openapi-v1.yaml)
-[`OpenApi Version 2.0.0`](./src/main/resources/static/openapi-v2.yaml)
+[`OpenApi Version 1.0.0`](src/main/resources/static/openapi-v1.0.0.yaml)
+[`OpenApi Version 2.0.0`](src/main/resources/static/openapi-v2.0.0.yaml)
