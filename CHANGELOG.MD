@@ -1,5 +1,5 @@
 # Changelog
-## [1.0.1] – 2025-07-24
+## [1.1.0] – 2025-07-24
 ### Added
 - Security configuration for JWT authentication.
 - LoginUseCase for user authentication.
