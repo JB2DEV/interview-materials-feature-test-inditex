@@ -15,7 +15,7 @@ The project follows a layered architecture:
 3. **Use Cases**: Encapsulate specific application functionalities.
 4. **Repositories**: Interact with the database using reactive programming.
 5. **Infrastructure**: Includes configuration files and database initialization logic.
-
+6. **Ports and Adapters**: Ensure modularity and flexibility by defining interfaces (ports) and their implementations (adapters) for communication between layers and external systems.
 ---
 
 ## Key Components
@@ -24,16 +24,24 @@ The project follows a layered architecture:
 
 - **[`AssetGetRestControllerAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/in/rest/AssetGetRestControllerAdapter.java)**: Handles GET requests to retrieve assets.
 - **[`AssetPostRestControllerAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/in/rest/AssetPostRestControllerAdapter.java)**: Handles POST requests to upload new assets.
+- **[`LoginRestControllerAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/in/rest/LoginRestControllerAdapter.java)**: Manages user authentication by handling login requests and returning JWT tokens.
 
 ### Services
 
 - **[`GetAssetsServiceAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/in/service/GetAssetsServiceAdapter.java)**: Provides logic to fetch assets from the database.
 - **[`UploadAssetServiceAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/in/service/UploadAssetServiceAdapter.java)**: Handles asset upload operations.
+- **[`LoginServiceAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/in/service/LoginServiceAdapter.java)**: Implements the authentication logic, validating user credentials and generating JWT tokens.
 
 ### Use Cases
 
 - **[`GetAssetsByFilterUseCase`](./src/main/java/com/interview/materials/feature/test/inditex/application/usecase/GetAssetsByFilterUseCase.java)**: Implements filtering logic for asset retrieval.
 - **[`UploadAssetUseCase`](./src/main/java/com/interview/materials/feature/test/inditex/application/usecase/UploadAssetUseCase.java)**: Encapsulates the asset upload process.
+- **[`LoginUseCase`](./src/main/java/com/interview/materials/feature/test/inditex/application/usecase/LoginUseCase.java)**: Encapsulates the user authentication process, delegating credential validation and token generation to the service layer.
+
+### Repositories
+
+- **[`AssetRepositoryAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/out/repository/AssetRepositoryAdapter.java)**: Manages database interactions for asset-related operations, using reactive programming with **R2DBC**.
+- **[`LoginRepositoryAdapter`](./src/main/java/com/interview/materials/feature/test/inditex/infrastructure/adapter/out/repository/LoginRepositoryAdapter.java)**: Handles user-related database operations, including authentication and role management.
 
 ---
 
@@ -45,7 +53,7 @@ The application uses **Spring Security** to secure endpoints and manage user aut
 
 ## Utilities
 
-The [`DateParser`](./src/main/java/com/interview/materials/feature/test/inditex/shared/utils/DateParser.java) class provides utility methods for parsing and formatting dates. It ensures consistent handling of date formats across the application, particularly for filtering assets by date ranges. This utility is designed to handle edge cases and invalid date inputs gracefully.
+The [`DateUtils`](./src/main/java/com/interview/materials/feature/test/inditex/shared/utils/DateUtils.java) class provides utility methods for parsing and formatting dates. It ensures consistent handling of date formats across the application, particularly for filtering assets by date ranges. This utility is designed to handle edge cases and invalid date inputs gracefully.
 
 ---
 
@@ -213,3 +221,5 @@ The project includes a Postman collection [`AssetCollection.postman_collection.j
 
 - **Resilient**: Implement retry mechanisms and circuit breakers using libraries like **Resilience4j** to handle transient failures and improve system reliability. Add fallback methods to ensure graceful degradation during service interruptions.
 - **Pagination**: Add pagination support to the API responses to handle large datasets efficiently. Use query parameters like page and size to control the pagination behavior.
+- **CQRS**: Introduce the **Command Query Responsibility Segregation** pattern to separate read and write operations, improving scalability and maintainability. Use dedicated models and services for queries and commands.
+- **Event Driven**: Integrate **Apache Kafka** or **RabbitMQ** for event-driven architecture, enabling asynchronous communication between microservices and ensuring reliable message processing for high-throughput scenarios.
