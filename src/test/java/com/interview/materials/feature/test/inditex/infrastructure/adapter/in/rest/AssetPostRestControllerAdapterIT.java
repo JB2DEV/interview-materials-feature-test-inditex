@@ -7,8 +7,11 @@ import com.interview.materials.feature.test.inditex.infrastructure.web.dto.Asset
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -18,14 +21,16 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import reactor.test.StepVerifier;
-
+import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers;
 import java.util.Base64;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
+@AutoConfigureWebTestClient
 class AssetPostRestControllerAdapterIT {
 
     @Container
@@ -56,9 +61,31 @@ class AssetPostRestControllerAdapterIT {
     @Autowired
     private AssetEntityRepositoryR2dbc assetEntityRepositoryR2dbc;
 
+    private String validToken;
+
     @BeforeEach
-    void cleanUp() {
+    void setUp() {
         assetEntityRepositoryR2dbc.deleteAll().block();
+        validToken = getToken();
+    }
+
+    private String getToken() {
+        return webTestClient.post()
+                .uri("/api/mgmt/1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("{\"username\": \"admin\", \"password\": \"admin123\"}")
+                .exchange()
+                .expectStatus().isOk()
+                .returnResult(new ParameterizedTypeReference<Map<String, String>>() {})
+                .getResponseBody()
+                .map(map -> map.get("token"))
+                .blockFirst();
+    }
+
+    private WebTestClient.RequestHeadersSpec<?> authenticate(
+            WebTestClient.RequestHeadersSpec<?> spec
+    ) {
+        return spec.header(HttpHeaders.AUTHORIZATION, "Bearer " + validToken);
     }
 
     @Test
@@ -72,10 +99,14 @@ class AssetPostRestControllerAdapterIT {
 
         int expectedSize = Base64.getDecoder().decode(validBase64Image).length;
 
-        webTestClient.post()
+        WebTestClient.RequestHeadersSpec<?> spec = webTestClient.post()
                 .uri("/api/mgmt/1/assets/actions/upload")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
+                .bodyValue(request);
+
+        WebTestClient.RequestHeadersSpec<?> withAuth = authenticate(spec);
+
+        withAuth
                 .exchange()
                 .expectStatus().isAccepted()
                 .expectBody(AssetFileUploadResponse.class)
@@ -102,10 +133,14 @@ class AssetPostRestControllerAdapterIT {
                 ""
         );
 
-        webTestClient.post()
+        WebTestClient.RequestHeadersSpec<?> spec = webTestClient.post()
                 .uri("/api/mgmt/1/assets/actions/upload")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
+                .bodyValue(request);
+
+        WebTestClient.RequestHeadersSpec<?> withAuth = authenticate(spec);
+
+        withAuth
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody()
@@ -121,10 +156,14 @@ class AssetPostRestControllerAdapterIT {
                 "text/plain"
         );
 
-        webTestClient.post()
+        WebTestClient.RequestHeadersSpec<?> spec = webTestClient.post()
                 .uri("/api/mgmt/1/assets/actions/upload")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
+                .bodyValue(request);
+
+        WebTestClient.RequestHeadersSpec<?> withAuth = authenticate(spec);
+
+        withAuth
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody()
@@ -140,10 +179,14 @@ class AssetPostRestControllerAdapterIT {
                 "image/png"
         );
 
-        webTestClient.post()
+        WebTestClient.RequestHeadersSpec<?> spec = webTestClient.post()
                 .uri("/api/mgmt/1/assets/actions/upload")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
+                .bodyValue(request);
+
+        WebTestClient.RequestHeadersSpec<?> withAuth = authenticate(spec);
+
+        withAuth
                 .exchange()
                 .expectStatus().isBadRequest()
                 .expectBody()
@@ -159,11 +202,70 @@ class AssetPostRestControllerAdapterIT {
                 "text/plain"
         );
 
-        webTestClient.post()
+        WebTestClient.RequestHeadersSpec<?> spec = webTestClient.post()
                 .uri("/api/mgmt/2/assets/actions/upload")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
+                .bodyValue(request);
+
+        WebTestClient.RequestHeadersSpec<?> withAuth = authenticate(spec);
+
+        withAuth
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+    @Test
+    void uploadAsset_InvalidToken_ReturnsUnauthorized() {
+        AssetFileUploadRequest req = new AssetFileUploadRequest(
+                "new-image.jpg",
+                Base64.getEncoder().encodeToString("bytes".getBytes()),
+                "image/jpg"
+        );
+
+        webTestClient.post()
+                .uri("/api/mgmt/1/assets/actions/upload")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + "bad.token.here")
+                .bodyValue(req)
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void uploadAsset_NoToken_ReturnsUnauthorized() {
+        AssetFileUploadRequest req = new AssetFileUploadRequest(
+                "new-image.jpg",
+                Base64.getEncoder().encodeToString("bytes".getBytes()),
+                "image/jpg"
+        );
+
+        webTestClient.post()
+                .uri("/api/mgmt/1/assets/actions/upload")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(req)
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void whenUserHasOnlyRoleUser_thenUploadReturnsForbiddenWithCustomBody() {
+        AssetFileUploadRequest req = new AssetFileUploadRequest(
+                "forbidden.png",
+                Base64.getEncoder().encodeToString("xxx".getBytes()),
+                "image/png"
+        );
+
+        webTestClient
+                .mutateWith(SecurityMockServerConfigurers.mockUser("someUser").roles("USER"))
+                .post().uri("/api/mgmt/1/assets/actions/upload")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(req)
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.status").isEqualTo(403)
+                .jsonPath("$.message").isEqualTo("You do not have enough permissions");
+
     }
 }

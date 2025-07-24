@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/mgmt/1/auth")
 @RequiredArgsConstructor
 @Slf4j
-public class LoginController {
+public class LoginRestControllerAdapter {
 
     private final LoginServicePort loginServicePort;
     private final AppUserMapper appUserMapper;
