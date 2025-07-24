@@ -1,4 +1,13 @@
 # Changelog
+## [1.0.1] – 2025-07-24
+### Added
+- Security configuration for JWT authentication.
+- LoginUseCase for user authentication.
+- User entity and repository for managing user data.
+- JWT token generation and validation.
+### Changed
+- Updated AssetPostRestControllerAdapter to include JWT authentication.
+
 ## [1.0.1] – 2025-07-23
 ### Added
 - Validation pattern on `AssetFileUploadRequest` for Base64 encoding via `@Pattern` annotation
